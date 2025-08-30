@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { generateVerificationToken } from "../lib/utils.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -65,12 +66,16 @@ userSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 
+    // generate verification token
+    const verificationToken = generateVerificationToken();
+    this.verificationToken = verificationToken;
+    this.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
     // move on to the next middleware
     next();
   } catch (error) {
     return next(error);
   }
-  next();
 });
 
 userSchema.methods.comparePassword = async function (inputPassword) {
