@@ -6,19 +6,19 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Name is required."],
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, "Email is required."],
       unique: true,
       lowercase: true,
       trim: true,
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: [12, "Password must be at least 12 characters long"],
+      required: [true, "Password is required."],
+      minlength: [12, "Password must be at least 12 characters long.\n"],
     },
     isVerified: {
       type: Boolean,
@@ -54,10 +54,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Create user collection using mongoose schema
-const User = mongoose.model("User", userSchema);
-
-// Pre-save hook to hash passwords before saving to the database
+// Pre-save hook to hash passwords and generate verification tokens before saving to the database
 userSchema.pre("save", async function (next) {
   // if the password is not modified, move on to the next middleware
   if (!this.isModified("password")) return next();
@@ -87,6 +84,9 @@ userSchema.methods.comparePassword = async function (inputPassword) {
     );
   }
 };
+
+// Create user collection using mongoose schema
+const User = mongoose.model("User", userSchema);
 
 // Export user model
 export default User;
