@@ -59,11 +59,14 @@ export const register = async (req, res) => {
         user.email
       );
       res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isVerified: user.isVerified,
+        message: "User registered successfully.",
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isVerified: user.isVerified,
+        },
       });
     } catch (emailError) {
       // Delete the user if email verification fails
@@ -74,7 +77,7 @@ export const register = async (req, res) => {
         emailError.message
       );
       res.status(500).json({
-        error:
+        message:
           "Registration failed. Could not send verification email. Please try again.",
         error: emailError.message,
       });
@@ -94,20 +97,24 @@ export const login = async (req, res) => {
     if (user) {
       // user found, continue
       const passwordMatch = await user.comparePassword(password);
+      let serverMessage = user.isVerified
+        ? "Login successful."
+        : "Login Successful, but user is not verified.";
 
-      if (user.isVerified && passwordMatch) {
+      if (passwordMatch) {
         const { accessToken, refreshToken } = generateTokens(user._id);
         await storeRefreshToken(user._id, refreshToken);
         setCookies(res, accessToken, refreshToken);
-        res.json({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          isVerified: user.isVerified,
+        res.status(200).json({
+          message: serverMessage,
+          data: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            isVerified: user.isVerified,
+          },
         });
-      } else if (!user.isVerified && passwordMatch) {
-        res.status(403).json({ message: "User is not verified." });
       } else {
         res.status(401).json({ message: "Invalid email or password." });
       }
@@ -190,4 +197,52 @@ export const verifyEmail = async (req, res) => {
     console.log("Error in verifyEmail controller:", error.message);
     res.status(500).json({ message: "Internal Server Error." });
   }
+};
+
+// this will refresh the access token
+export const refreshToken = async (req, res) => {
+  try {
+    // use refresh token to generate new access token
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token not provided." });
+    }
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const storedToken = await redis.get(`refresh_token:${decoded.userId}`);
+
+    if (storedToken !== refreshToken) {
+      return res.status(401).json({ message: "Invalid refresh token." });
+    }
+
+    const accessToken = jwt.sign(
+      { userId: decoded.userId },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+    res.status(200).json({ message: "Access token refreshed successfully." });
+  } catch (error) {
+    console.log("Error in refreshToken controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
+};
+
+// we need access to the logged in user's profile
+export const getProfile = async (req, res) => {
+  try {
+    res.status(200).json({
+      message: "User profile retrieved successfully.",
+      data: req.user,
+    });
+  } catch (error) {
+    console.log("Error in getProfile controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
+  res.send("getProfile");
 };
