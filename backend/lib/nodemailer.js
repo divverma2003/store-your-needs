@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 
 let transporter = null;
 
+// TODO: Fix the dependency problems with env
 // Create transporter lazily when needed
 const getTransporter = () => {
   if (!transporter) {

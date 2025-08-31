@@ -1,4 +1,25 @@
+import { redis } from "./redis.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
+
+export const storeRefreshToken = async (userId, refreshToken) => {
+  await redis.set(
+    `refresh_token:${userId}`,
+    refreshToken,
+    "EX",
+    7 * 24 * 60 * 60
+  );
+};
+
+export const generateTokens = (userId) => {
+  const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m",
+  });
+  const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "7d",
+  });
+  return { accessToken, refreshToken };
+};
 
 export const prepareVerificationEmail = (verificationToken, email, name) => {
   const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000";
@@ -30,7 +51,6 @@ export const prepareVerificationEmail = (verificationToken, email, name) => {
       </div>
     `,
   };
-
   return mailOptions;
 };
 
