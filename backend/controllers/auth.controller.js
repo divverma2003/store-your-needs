@@ -6,6 +6,7 @@ import {
   prepareVerificationEmail,
   generateTokens,
   storeRefreshToken,
+  updateFeaturedProductsCache,
 } from "../lib/utils.js";
 import { redis } from "../lib/redis.js";
 import { set } from "mongoose";
@@ -58,7 +59,7 @@ export const register = async (req, res) => {
         "Verification email set successfully. User registered successfully:",
         user.email
       );
-      res.status(201).json({
+      return res.status(201).json({
         message: "User registered successfully.",
         data: {
           _id: user._id,
@@ -76,7 +77,7 @@ export const register = async (req, res) => {
         "Error occurred while sending verification email: ",
         emailError.message
       );
-      res.status(500).json({
+      return res.status(500).json({
         message:
           "Registration failed. Could not send verification email. Please try again.",
         error: emailError.message,
@@ -84,7 +85,7 @@ export const register = async (req, res) => {
     }
   } catch (error) {
     console.log("Error occurred in register authController:", error.message);
-    res
+    return res
       .status(500)
       .json({ message: `Internal server error`, error: error.message });
   }
@@ -105,7 +106,7 @@ export const login = async (req, res) => {
         const { accessToken, refreshToken } = generateTokens(user._id);
         await storeRefreshToken(user._id, refreshToken);
         setCookies(res, accessToken, refreshToken);
-        res.status(200).json({
+        return res.status(200).json({
           message: serverMessage,
           data: {
             _id: user._id,
@@ -116,14 +117,14 @@ export const login = async (req, res) => {
           },
         });
       } else {
-        res.status(401).json({ message: "Invalid email or password." });
+        return res.status(401).json({ message: "Invalid email or password." });
       }
     } else {
-      res.status(401).json({ message: "Invalid email or password." });
+      return res.status(401).json({ message: "Invalid email or password." });
     }
   } catch (error) {
     console.log("Error occurred in login authController:", error.message);
-    res
+    return res
       .status(500)
       .json({ message: `Internal server error`, error: error.message });
   }
@@ -145,10 +146,10 @@ export const logout = async (req, res) => {
     // clear from browser
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
-    res.json({ message: "Logged out successfully." });
+    return res.status(200).json({ message: "Logged out successfully." });
   } catch (error) {
     console.log("Error in logout authController:", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: `Internal server error.`,
       error: error.message,
     });
@@ -184,7 +185,7 @@ export const verifyEmail = async (req, res) => {
 
     console.log("Email verified successfully for user:", user.email);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Email verified successfully! You can now log in.",
       data: {
         _id: user._id,
@@ -195,7 +196,7 @@ export const verifyEmail = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in verifyEmail controller:", error.message);
-    res.status(500).json({ message: "Internal Server Error." });
+    return res.status(500).json({ message: "Internal Server Error." });
   }
 };
 
@@ -226,23 +227,24 @@ export const refreshToken = async (req, res) => {
       sameSite: "strict",
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
-    res.status(200).json({ message: "Access token refreshed successfully." });
+    return res
+      .status(200)
+      .json({ message: "Access token refreshed successfully." });
   } catch (error) {
     console.log("Error in refreshToken controller:", error.message);
-    res.status(500).json({ message: "Internal Server Error." });
+    return res.status(500).json({ message: "Internal Server Error." });
   }
 };
 
 // we need access to the logged in user's profile
 export const getProfile = async (req, res) => {
   try {
-    res.status(200).json({
+    return res.status(200).json({
       message: "User profile retrieved successfully.",
       data: req.user,
     });
   } catch (error) {
     console.log("Error in getProfile controller:", error.message);
-    res.status(500).json({ message: "Internal Server Error." });
+    return res.status(500).json({ message: "Internal Server Error." });
   }
-  res.send("getProfile");
 };

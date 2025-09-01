@@ -1,7 +1,17 @@
 import { redis } from "./redis.js";
+import Product from "../models/product.model.js";
 import crypto from "crypto";
+import stripe from "./stripe.js";
 import jwt from "jsonwebtoken";
 
+export const updateFeaturedProductsCache = async () => {
+  try {
+    const featuredProducts = await Product.find({ isFeatured: true }).lean();
+    await redis.set("featured_products", JSON.stringify(featuredProducts));
+  } catch (error) {
+    console.log("Error in updating featured products cache:", error.message);
+  }
+};
 export const storeRefreshToken = async (userId, refreshToken) => {
   await redis.set(
     `refresh_token:${userId}`,
@@ -56,4 +66,28 @@ export const prepareVerificationEmail = (verificationToken, email, name) => {
 
 export const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
+};
+
+export const createStripeCoupon = async (discountPercentage) => {
+  const coupon = await stripe.coupons.create({
+    percent_off: discountPercentage,
+    duration: "once",
+  });
+  return coupon.id;
+};
+
+export const createNewCoupon = async (userId) => {
+  const MIN_OFF = 2;
+  const MAX_OFF = 40;
+  const newCoupon = new Coupon({
+    code:
+      "HAPPYWEEK" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    discountPercentage:
+      Math.floor(Math.random() * (MAX_OFF - MIN_OFF + 1)) + MIN_OFF, // random integer between 2 and 40
+    expirationDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    userId: userId,
+  });
+
+  await newCoupon.save();
+  return newCoupon;
 };
