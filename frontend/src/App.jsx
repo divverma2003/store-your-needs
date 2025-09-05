@@ -1,11 +1,29 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+// hooks
+import { useEffect } from "react";
+import { useUserStore } from "./stores/useUserStore.js";
+
+// components
+import Navbar from "./components/Navbar";
+import LoadingSpinner from "./components/LoadingSpinner.jsx";
+
+// pages
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import Navbar from "./components/Navbar";
-import { Toaster } from "react-hot-toast";
-
 const App = () => {
+  const { user, checkAuth, isCheckingAuth } = useUserStore();
+  // since we want the user to remain signed in after refresh, we'll have to use a useEffect
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]); // Empty dependency array - only run once on mount
+
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       {/* Background gradient */}
@@ -20,8 +38,15 @@ const App = () => {
         {/* Add top padding to account for fixed navbar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          {/* Redirect to HomePage if user is logged in */}
+          <Route
+            path="/register"
+            element={!user ? <RegisterPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/login"
+            element={!user ? <LoginPage /> : <Navigate to="/" />}
+          />
         </Routes>
       </div>
       <Toaster />

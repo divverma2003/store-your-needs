@@ -7,9 +7,6 @@ export const useUserStore = create((set, get) => ({
   user: null,
   loading: false,
   isCheckingAuth: true, // to check if we are checking for auth status
-  isRegistering: false,
-  isLoggingIn: false,
-  isVerifyingEmail: false,
 
   // actions
   register: async ({ name, email, password, confirmPassword }) => {
@@ -27,13 +24,10 @@ export const useUserStore = create((set, get) => ({
         email,
         password,
       });
-      set({ user: res.data.user, loading: false });
+      set({ user: res.data, loading: false });
       toast.success("Account created successfully!");
-    } catch (error) {
       set({ loading: false });
-      console.log("Registration error:", error); // Debug log
-
-      // More specific error handling
+    } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||
@@ -41,11 +35,65 @@ export const useUserStore = create((set, get) => ({
         "Error while registering, try again later.";
 
       toast.error(errorMessage);
+      set({ loading: false });
     }
   },
-  login: async () => {},
-  logout: async () => {},
-  checkAuth: async () => {},
+  login: async ({ email, password }) => {
+    set({ loading: true });
+    // send login request to the backend
+    try {
+      const res = await axios.post("/auth/login", { email, password });
+      // Extract user data (response might include message field)
+      set({ user: res.data });
+      // console.log(res.data);
+      toast.success("Logged in successfully!");
+      set({ loading: false });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while logging in, try again later.";
+
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
+  logout: async () => {
+    set({ loading: true });
+    try {
+      await axios.post("/auth/logout");
+      set({ user: null, loading: false });
+      toast.success("Logged out successfully!");
+      window.location.href = "/";
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while logging out.";
+      toast.error(errorMessage);
+    }
+  },
+  checkAuth: async () => {
+    set({ isCheckingAuth: true });
+    try {
+      const res = await axios.get("/auth/profile"); // get user info
+      set({ user: res.data, isCheckingAuth: false });
+    } catch (error) {
+      set({ isCheckingAuth: false, user: null });
+
+      // Don't show error toast for 401 (unauthorized) - it's normal when logged out
+
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Something went wrong.";
+      toast.error(errorMessage);
+    }
+  },
   refreshToken: async () => {},
   verifyEmail: async (token) => {},
 }));

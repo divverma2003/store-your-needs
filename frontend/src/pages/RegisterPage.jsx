@@ -17,8 +17,7 @@ import { useUserStore } from "../stores/useUserStore.js";
 
 const RegisterPage = () => {
   // Placeholder state
-  const loading = false;
-  const { register } = useUserStore();
+  const { register, loading } = useUserStore();
   const [formData, setFormData] = useState({
     name: "",
     email: "",

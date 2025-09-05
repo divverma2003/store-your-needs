@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, LogIn, Lock, ArrowRight, Loader } from "lucide-react";
 import FormInput from "../components/FormInput";
+import { useUserStore } from "../stores/useUserStore.js";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const loading = false;
+  const { login, loading } = useUserStore();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", { email, password });
+    login({ email, password });
   };
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
