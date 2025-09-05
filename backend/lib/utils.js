@@ -1,7 +1,7 @@
 import { redis } from "./redis.js";
 import Product from "../models/product.model.js";
 import crypto from "crypto";
-import stripe from "./stripe.js";
+import { stripe } from "./stripe.js";
 import jwt from "jsonwebtoken";
 
 export const updateFeaturedProductsCache = async () => {
@@ -64,6 +64,77 @@ export const prepareVerificationEmail = (verificationToken, email, name) => {
   return mailOptions;
 };
 
+export const preparePurchaseSuccessEmail = (email, name, orderDetails) => {
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000";
+
+  // Generate product list HTML
+  const productListHTML = orderDetails.products
+    .map(
+      (product) => `
+    <tr style="border-bottom: 1px solid #e9d5ff;">
+      <td style="padding: 12px; text-align: left;">${product.name}</td>
+      <td style="padding: 12px; text-align: center;">${product.quantity}</td>
+      <td style="padding: 12px; text-align: right;">$${product.price.toFixed(
+        2
+      )}</td>
+      <td style="padding: 12px; text-align: right;">$${(
+        product.price * product.quantity
+      ).toFixed(2)}</td>
+    </tr>
+  `
+    )
+    .join("");
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Order Confirmation - Store Your Needs",
+    html: `
+      <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; background: #f8f6fc;">
+        <h1 style="color: #7c3aed; text-align: center;">Order Confirmed!</h1>
+        <p>Hi <strong>${name}</strong>,</p>
+        <p>Thank you for your purchase! Your order has been confirmed and is being processed.</p>
+        
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);">
+          <h2 style="color: #7c3aed; margin-top: 0;">Order Details</h2>
+          <p><strong>Order ID:</strong> ${orderDetails.id}</p>
+          <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);">
+          <h3 style="color: #7c3aed; margin-top: 0;">Items Ordered</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #7c3aed; color: white;">
+                <th style="padding: 12px; text-align: left;">Product</th>
+                <th style="padding: 12px; text-align: center;">Qty</th>
+                <th style="padding: 12px; text-align: right;">Price</th>
+                <th style="padding: 12px; text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${productListHTML}
+            </tbody>
+          </table>
+          
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #7c3aed;">
+            <p style="text-align: right; font-size: 18px; font-weight: bold; color: #7c3aed; margin: 0;">
+              Total Amount: $${orderDetails.totalAmount.toFixed(2)}
+            </p>
+          </div>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e9d5ff;">
+        <p style="color: #a78bfa; font-size: 12px;">
+          Questions about your order? Contact us at support@storeyourneeds.com<br>
+          &copy; ${new Date().getFullYear()} Store Your Needs. All rights reserved.
+        </p>
+      </div>
+    `,
+  };
+  return mailOptions;
+};
+
 export const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
@@ -90,4 +161,15 @@ export const createNewCoupon = async (userId) => {
 
   await newCoupon.save();
   return newCoupon;
+};
+
+export const getDatesInRange = (startDate, endDate) => {
+  const dates = [];
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    dates.push(currentDate.toISOString().split("T")[0]);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  // dates will be formatted as YYYY-MM-DD
+  return dates;
 };

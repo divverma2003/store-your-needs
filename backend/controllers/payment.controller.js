@@ -1,5 +1,7 @@
-import { stripe } from "../config/stripe.config.js";
+import { stripe } from "../lib/stripe.js";
 import { createStripeCoupon } from "../lib/utils.js";
+import getTransporter from "../lib/nodemailer.js";
+
 export const createCheckoutSession = async (req, res) => {
   const BASE_URL =
     process.env.CLIENT_URL || "http://localhost:5000/api/payments";
@@ -63,6 +65,7 @@ export const createCheckoutSession = async (req, res) => {
         products: JSON.stringify(
           products.map((p) => ({
             id: p._id,
+            name: p.name, // check
             quantity: p.quantity,
             price: p.price,
           }))
@@ -120,9 +123,37 @@ export const checkoutSuccess = async (req, res) => {
         stripeSessionId: sessionId,
       });
       await newOrder.save();
+      // let's get the user email, name, and order details
+      const user = await User.findById(session.metadata.userId);
+      const email = user.email;
+      const name = user.name;
+      const orderDetails = {
+        id: newOrder._id,
+        products,
+        totalAmount: newOrder.totalAmount,
+      };
+
+      // send confirmation email
+      const mailOptions = preparePurchaseSuccessEmail(
+        email,
+        name,
+        orderDetails
+      );
+
+      let message = "Payment sucessful and order created.";
+      try {
+        const transporter = getTransporter();
+        await transporter.sendMail(mailOptions);
+        console.log("Purchase confirmation email sent to:", email);
+        message += " and email sent successfully.";
+      } catch (error) {
+        console.error("Error sending email:", error);
+        message += " but email failed to send.";
+      }
+
       return res.status(200).json({
         success: true,
-        message: "Payment successful and order created.",
+        message: message,
         data: { orderId: newOrder._id },
       });
     }

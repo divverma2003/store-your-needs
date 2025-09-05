@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
     "nodemailer": "^7.0.6",
+    "recharts": "^3.1.2",
     "stripe": "^18.5.0"
   },
   "devDependencies": {
