@@ -34,7 +34,9 @@ export const register = async (req, res) => {
     const { email, name, password } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).send(`User with email: ${email} already exists.`);
+      return res
+        .status(400)
+        .json({ message: `User with email: ${email} already exists.` });
     }
     const user = await User.create({ name, email, password });
 
@@ -85,9 +87,13 @@ export const register = async (req, res) => {
     }
   } catch (error) {
     console.log("Error occurred in register authController:", error.message);
+
     return res
       .status(500)
-      .json({ message: `Internal server error`, error: error.message });
+      .json({
+        message: error.message || `Internal server error`,
+        error: error.message,
+      });
   }
 };
 
@@ -126,7 +132,10 @@ export const login = async (req, res) => {
     console.log("Error occurred in login authController:", error.message);
     return res
       .status(500)
-      .json({ message: `Internal server error`, error: error.message });
+      .json({
+        message: error.message || "Internal server error",
+        error: error.message,
+      });
   }
 };
 
@@ -150,7 +159,7 @@ export const logout = async (req, res) => {
   } catch (error) {
     console.log("Error in logout authController:", error.message);
     return res.status(500).json({
-      message: `Internal server error.`,
+      message: error.message || "Internal server error",
       error: error.message,
     });
   }
@@ -196,7 +205,12 @@ export const verifyEmail = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in verifyEmail controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error." });
+    return res
+      .status(500)
+      .json({
+        message: error.message || "Internal server error",
+        error: error.message,
+      });
   }
 };
 
@@ -232,7 +246,12 @@ export const refreshToken = async (req, res) => {
       .json({ message: "Access token refreshed successfully." });
   } catch (error) {
     console.log("Error in refreshToken controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error." });
+    return res
+      .status(500)
+      .json({
+        message: error.message || "Internal server error",
+        error: error.message,
+      });
   }
 };
 
@@ -245,6 +264,11 @@ export const getProfile = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in getProfile controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error." });
+    return res
+      .status(500)
+      .json({
+        message: error.message || "Internal Server Error.",
+        error: error.message,
+      });
   }
 };

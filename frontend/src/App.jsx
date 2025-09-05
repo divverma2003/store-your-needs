@@ -3,6 +3,8 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import Navbar from "./components/Navbar";
+import { Toaster } from "react-hot-toast";
+
 const App = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
@@ -22,6 +24,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
+      <Toaster />
     </div>
   );
 };

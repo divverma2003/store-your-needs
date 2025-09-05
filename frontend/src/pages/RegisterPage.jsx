@@ -13,9 +13,12 @@ import { motion } from "framer-motion";
 import { set } from "mongoose";
 import FormInput from "../components/FormInput";
 
+import { useUserStore } from "../stores/useUserStore.js";
+
 const RegisterPage = () => {
   // Placeholder state
   const loading = false;
+  const { register } = useUserStore();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,7 +29,7 @@ const RegisterPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    register(formData);
   };
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
