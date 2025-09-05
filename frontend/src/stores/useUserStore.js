@@ -65,7 +65,7 @@ export const useUserStore = create((set, get) => ({
       await axios.post("/auth/logout");
       set({ user: null, loading: false });
       toast.success("Logged out successfully!");
-      window.location.href = "/";
+      // window.location.href = "/";
     } catch (error) {
       set({ loading: false });
       const errorMessage =
@@ -85,7 +85,10 @@ export const useUserStore = create((set, get) => ({
       set({ isCheckingAuth: false, user: null });
 
       // Don't show error toast for 401 (unauthorized) - it's normal when logged out
-
+      if (error.response?.status === 401) {
+        set({ user: null, isCheckingAuth: false });
+        return;
+      }
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||
