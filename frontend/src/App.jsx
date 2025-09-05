@@ -13,11 +13,15 @@ const App = () => {
         </div>
       </div>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
+      <div className="pt-25">
+        {" "}
+        {/* Add top padding to account for fixed navbar */}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </div>
     </div>
   );
 };

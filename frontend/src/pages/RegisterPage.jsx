@@ -15,7 +15,7 @@ import FormInput from "../components/FormInput";
 
 const RegisterPage = () => {
   // Placeholder state
-  const loading = true;
+  const loading = false;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,8 +37,8 @@ const RegisterPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.75 }}
       >
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-emerald-400">
-          Get Started
+        <h2 className="m-6 text-center text-3xl font-extrabold text-emerald-400">
+          Create Your Account
         </h2>
       </motion.div>
       {/* Animated form container using Framer Motion */}
