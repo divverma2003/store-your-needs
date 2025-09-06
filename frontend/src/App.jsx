@@ -16,6 +16,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -61,6 +62,19 @@ const App = () => {
               )
             }
           />
+          <Route
+            path="/verify-email/:token"
+            element={
+              !user?.isVerified ? <VerifyEmailPage /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/verify-email"
+            element={
+              !user?.isVerified ? <VerifyEmailPage /> : <Navigate to="/" />
+            }
+          />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

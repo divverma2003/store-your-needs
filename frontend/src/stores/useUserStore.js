@@ -98,8 +98,59 @@ export const useUserStore = create((set, get) => ({
       toast.error(errorMessage);
     }
   },
+  // TODO: Implement the axios interceptor to automatically refresh tokens (so user doesn't have to login again when access token expires -- i.e, every 15 minutes).
   refreshToken: async () => {},
-  verifyEmail: async (token) => {},
-}));
+  verifyEmail: async (token) => {
+    set({ loading: true });
+    if (!token) {
+      toast.error("Verification token is required");
+      set({ loading: false });
+      return;
+    }
+    try {
+      const res = await axios.get(`/auth/verify-email/${token}`);
+      toast.success(res.data?.message || "Email verified successfully!");
+      set({ loading: false });
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Something went wrong.";
 
-// TODO: Implement the axios interceptor to automatically refresh tokens (so user doesn't have to login again when access token expires -- i.e, every 15 minutes).
+      toast.error(errorMessage);
+      // rethrow error for component to handle
+      throw error; // Re-throw so component can handle it
+    }
+  },
+  resendVerification: async () => {
+    set({ loading: true });
+    try {
+      // get the logged in user's email
+      const email = get().user?.email;
+      if (!email) {
+        toast.error("User email not found. Please log in again.");
+        set({ loading: false });
+        return;
+      }
+      const res = await axios.post("/auth/resend-verification", {
+        email,
+      });
+
+      toast.success("Verification email sent! Please check your inbox.");
+      set({ loading: false });
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while resending verification email. Please try again later.";
+
+      toast.error(errorMessage);
+    }
+  },
+}));

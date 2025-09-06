@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ShoppingCart,
+  Mail,
   UserPlus,
   LogIn,
   LogOut,
@@ -13,6 +14,7 @@ import { useUserStore } from "../stores/useUserStore.js";
 const Navbar = () => {
   const { user, logout } = useUserStore();
   const isAdmin = user && user.role === "admin";
+  const isVerified = user && user.isVerified;
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -77,6 +79,17 @@ const Navbar = () => {
               >
                 <Lock className="inline-block mr-1" size={18} />
                 <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+            )}
+            {/* Show Verify Email link if user is not verified */}
+            {!isVerified && user && (
+              <Link
+                className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded-md font-medium
+								 transition duration-300 ease-in-out flex items-center"
+                to={"/verify-email"}
+              >
+                <Mail className="inline-block mr-1" size={18} />
+                <span className="hidden sm:inline">Verify Email</span>
               </Link>
             )}
             {/* Links to Register/Login or Logout (dependent on if current user) */}
