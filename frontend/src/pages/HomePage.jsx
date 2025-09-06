@@ -1,4 +1,6 @@
 import React from "react";
+
+// Components
 import CategoryItem from "../components/CategoryItem.jsx";
 const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },

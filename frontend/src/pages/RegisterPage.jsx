@@ -11,8 +11,11 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { set } from "mongoose";
+
+// Components
 import FormInput from "../components/FormInput";
 
+// Stores
 import { useUserStore } from "../stores/useUserStore.js";
 
 const RegisterPage = () => {

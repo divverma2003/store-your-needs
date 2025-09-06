@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, LogIn, Lock, ArrowRight, Loader } from "lucide-react";
+
+// Components
 import FormInput from "../components/FormInput";
+
+// Stores
 import { useUserStore } from "../stores/useUserStore.js";
 const LoginPage = () => {
   const [email, setEmail] = useState("");

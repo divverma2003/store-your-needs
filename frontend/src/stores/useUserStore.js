@@ -24,7 +24,8 @@ export const useUserStore = create((set, get) => ({
         email,
         password,
       });
-      set({ user: res.data, loading: false });
+      // Backend returns shape: { message, data: { _id, name, email, role, isVerified, ... } }
+      set({ user: res.data?.data, loading: false });
       toast.success("Account created successfully!");
       set({ loading: false });
     } catch (error) {
@@ -43,8 +44,8 @@ export const useUserStore = create((set, get) => ({
     // send login request to the backend
     try {
       const res = await axios.post("/auth/login", { email, password });
-      // Extract user data (response might include message field)
-      set({ user: res.data });
+      // Normalize to the user payload (res.data.data)
+      set({ user: res.data?.data });
       // console.log(res.data);
       toast.success("Logged in successfully!");
       set({ loading: false });
@@ -80,13 +81,12 @@ export const useUserStore = create((set, get) => ({
     set({ isCheckingAuth: true });
     try {
       const res = await axios.get("/auth/profile"); // get user info
-      set({ user: res.data, isCheckingAuth: false });
+      console.log("Auth check successful, user:", res.data?.data);
+      set({ user: res.data?.data, isCheckingAuth: false });
     } catch (error) {
-      set({ isCheckingAuth: false, user: null });
-
+      set({ user: null, isCheckingAuth: false });
       // Don't show error toast for 401 (unauthorized) - it's normal when logged out
       if (error.response?.status === 401) {
-        set({ user: null, isCheckingAuth: false });
         return;
       }
       const errorMessage =
@@ -94,6 +94,7 @@ export const useUserStore = create((set, get) => ({
         error.response?.data?.error ||
         error.message ||
         "Something went wrong.";
+
       toast.error(errorMessage);
     }
   },

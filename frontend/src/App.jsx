@@ -13,6 +13,8 @@ import LoadingSpinner from "./components/LoadingSpinner.jsx";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage.jsx";
+
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
   // since we want the user to remain signed in after refresh, we'll have to use a useEffect
@@ -47,6 +49,16 @@ const App = () => {
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to="/" />}
           />
+          <Route
+            path="secret-dashboard"
+            element={
+              user?.role === "admin" && user?.isVerified ? (
+                <AdminPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
         </Routes>
       </div>
       <Toaster />
@@ -54,4 +66,5 @@ const App = () => {
   );
 };
 
+// TODO: Add 404 Page Not Found Route, Add Email Verification Page, Add Order History Page (must add backend routing too), Add Azure Foundry Integration
 export default App;
