@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CheckCircle2,
   XCircle,
@@ -10,13 +10,24 @@ import {
 import { Link } from "react-router-dom";
 
 import { useUserStore } from "../stores/useUserStore";
+import { set } from "mongoose";
 
 const VerifyPanel = (props) => {
-  const [inputEmail, setInputEmail] = useState("");
   const { loading, resendVerification } = useUserStore();
+  const [countdown, setCountdown] = useState(10);
 
-  const providedEmail = props.user?.email;
-  const email = providedEmail || inputEmail;
+  const email = props.user?.email;
+
+  // Countdown effect for success status
+  useEffect(() => {
+    if (props.verificationStatus === "success" && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer); // Cleanup
+    }
+  }, [props.verificationStatus, countdown]);
 
   const handleResendVerification = async () => {
     setTimeout(async () => {
@@ -26,26 +37,9 @@ const VerifyPanel = (props) => {
 
   const VerifyButton = () => (
     <div className="flex flex-col items-center space-y-3">
-      {/* Email input field when no email is provided */}
-      {!providedEmail && (
-        <div className="w-full max-w-sm">
-          <label className="block text-sm font-medium text-gray-300 mb-1">
-            Enter your email to resend verification:
-          </label>
-          <input
-            type="email"
-            placeholder="your.email@example.com"
-            className="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm
-                     placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-            value={inputEmail}
-            onChange={(e) => setInputEmail(e.target.value)}
-          />
-        </div>
-      )}
-
       <button
         onClick={handleResendVerification}
-        disabled={loading || !email}
+        disabled={loading}
         className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed
                  text-white py-2 px-4 rounded-md flex items-center gap-2 transition duration-300 ease-in-out"
       >
@@ -118,8 +112,8 @@ const VerifyPanel = (props) => {
             </p>
             <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-6">
               <p className="text-green-400 text-sm">
-                Welcome to Store Your Needs! Redirecting to homepage in 10
-                seconds...
+                Welcome to Store Your Needs! Redirecting to login in{" "}
+                <span className="font-bold">{countdown}</span> seconds...
               </p>
             </div>
             <Link
@@ -142,7 +136,7 @@ const VerifyPanel = (props) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">
-              Your email verification failed. Try Again?
+              Something went wrong with your email verification. Try Again?
             </h2>
             <p className="text-red-400 mb-4">{props.errorMessage}</p>
             <VerifyButton />

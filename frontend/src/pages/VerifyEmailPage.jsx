@@ -47,7 +47,7 @@ const VerifyEmailPage = () => {
       }, 10000);
     } catch (error) {
       setVerificationStatus("error");
-      setErrorMessage(error.response?.data?.message || "Verification failed");
+      setErrorMessage(error.response?.data?.message || "Verification failed.");
     }
   };
 

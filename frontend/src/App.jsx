@@ -39,7 +39,6 @@ const App = () => {
       </div>
       <Navbar />
       <div className="pt-25">
-        {" "}
         {/* Add top padding to account for fixed navbar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -65,13 +64,21 @@ const App = () => {
           <Route
             path="/verify-email/:token"
             element={
-              !user?.isVerified ? <VerifyEmailPage /> : <Navigate to="/" />
+              user && !user.isVerified ? (
+                <VerifyEmailPage />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
           <Route
             path="/verify-email"
             element={
-              !user?.isVerified ? <VerifyEmailPage /> : <Navigate to="/" />
+              user && !user.isVerified ? (
+                <VerifyEmailPage />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
 
