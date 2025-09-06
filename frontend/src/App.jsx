@@ -7,6 +7,7 @@ import { useUserStore } from "./stores/useUserStore.js";
 
 // components
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
 
 // pages
@@ -14,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -59,8 +61,10 @@ const App = () => {
               )
             }
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
+      <Footer />
       <Toaster />
     </div>
   );

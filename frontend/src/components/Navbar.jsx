@@ -1,5 +1,12 @@
 import React from "react";
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
+import {
+  ShoppingCart,
+  UserPlus,
+  LogIn,
+  LogOut,
+  Lock,
+  ShoppingBag,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore.js";
@@ -22,11 +29,13 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex flex-wrap justify-between items-center">
           {/*LOGO*/}
+
           <Link
             to="/"
-            className="text-2xl font-bold text-emerald-400 items-center space-x-2 flex"
+            className="text-2xl font-bold text-emerald-400 items-center flex gap-3"
           >
-            Store Your Needs
+            <ShoppingBag className="size-12 text-emerald-400" />
+            <span>Store Your Needs</span>
           </Link>
           <nav className="flex flex-wrap items-center gap-4">
             <Link
