@@ -100,3 +100,5 @@ export const useUserStore = create((set, get) => ({
   refreshToken: async () => {},
   verifyEmail: async (token) => {},
 }));
+
+// TODO: Implement the axios interceptor to automatically refresh tokens (so user doesn't have to login again when access token expires -- i.e, every 15 minutes).
