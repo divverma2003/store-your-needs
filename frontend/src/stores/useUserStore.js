@@ -129,15 +129,13 @@ export const useUserStore = create((set, get) => ({
     set({ loading: true });
     try {
       // get the logged in user's email
-      const email = get().user?.email;
+      /* const email = get().user?.email;
       if (!email) {
         toast.error("User email not found. Please log in again.");
         set({ loading: false });
         return;
-      }
-      const res = await axios.post("/auth/resend-verification", {
-        email,
-      });
+      } */
+      const res = await axios.post("/auth/resend-verification");
 
       toast.success("Verification email sent! Please check your inbox.");
       set({ loading: false });

@@ -25,6 +25,10 @@ const VerifyEmailPage = () => {
       hasVerifiedRef.current = true; // Mark as attempted immediately
       console.log("Starting verification process...");
       handleVerification();
+    } else if (!token && !hasVerifiedRef.current) {
+      setVerificationStatus("error");
+    } else if (!token && hasVerifiedRef.current) {
+      setVerificationStatus("success");
     }
   }, [token]);
 
@@ -33,11 +37,13 @@ const VerifyEmailPage = () => {
     setVerificationStatus("verifying");
 
     try {
-      await verifyEmail(token);
+      setTimeout(async () => {
+        await verifyEmail(token);
+      }, 2000);
       setVerificationStatus("success");
-      // Auto redirect to login after 10 seconds
+      // Auto redirect to home after 10 seconds
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
       }, 10000);
     } catch (error) {
       setVerificationStatus("error");

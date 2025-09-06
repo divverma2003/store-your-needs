@@ -4,11 +4,11 @@ import {
   XCircle,
   RefreshCw,
   TriangleAlert,
+  Loader2,
   Mail,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import LoadingSpinner from "./LoadingSpinner";
 import { useUserStore } from "../stores/useUserStore";
 
 const VerifyPanel = (props) => {
@@ -19,7 +19,9 @@ const VerifyPanel = (props) => {
   const email = providedEmail || inputEmail;
 
   const handleResendVerification = async () => {
-    await resendVerification(email);
+    setTimeout(async () => {
+      await resendVerification();
+    }, 2000);
   };
 
   const VerifyButton = () => (
@@ -49,7 +51,7 @@ const VerifyPanel = (props) => {
       >
         {loading ? (
           <>
-            <LoadingSpinner className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
             Sending...
           </>
         ) : (
@@ -140,7 +142,7 @@ const VerifyPanel = (props) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">
-              Verification Failed. Try Again?
+              Your email verification failed. Try Again?
             </h2>
             <p className="text-red-400 mb-4">{props.errorMessage}</p>
             <VerifyButton />
