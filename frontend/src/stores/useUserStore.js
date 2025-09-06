@@ -110,7 +110,8 @@ export const useUserStore = create((set, get) => ({
     try {
       const res = await axios.get(`/auth/verify-email/${token}`);
       toast.success(res.data?.message || "Email verified successfully!");
-      set({ loading: false });
+      // Log out the user after successful verification
+      set({ user: null, loading: false });
       return res.data;
     } catch (error) {
       set({ loading: false });

@@ -4,7 +4,7 @@ import {
   XCircle,
   RefreshCw,
   TriangleAlert,
-  Loader2,
+  Loader,
   Mail,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ const VerifyPanel = (props) => {
       >
         {loading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader className="w-4 h-4 animate-spin" />
             Sending...
           </>
         ) : (
@@ -117,11 +117,11 @@ const VerifyPanel = (props) => {
               </p>
             </div>
             <Link
-              to="/"
+              to="/login"
               className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-6 rounded-md 
                        transition duration-300 ease-in-out inline-block font-medium"
             >
-              Continue to Homepage
+              Continue to Login
             </Link>
           </div>
         </div>

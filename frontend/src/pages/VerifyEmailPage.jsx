@@ -41,9 +41,9 @@ const VerifyEmailPage = () => {
         await verifyEmail(token);
       }, 2000);
       setVerificationStatus("success");
-      // Auto redirect to home after 10 seconds
+      // Auto redirect to login after 10 seconds
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 10000);
     } catch (error) {
       setVerificationStatus("error");
@@ -84,12 +84,12 @@ const VerifyEmailPage = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <Link
-            to="/"
+            to="/login"
             className="text-gray-400 hover:text-emerald-400 transition duration-300 ease-in-out 
                      flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            Back to Login
           </Link>
         </div>
       </div>
