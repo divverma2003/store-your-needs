@@ -91,5 +91,5 @@ const App = () => {
   );
 };
 
-// TODO: Add 404 Page Not Found Route, Add Email Verification Page, Add Order History Page (must add backend routing too), Add Azure Foundry Integration
+// TODO: Add Order History Page (must add backend routing too), Add Azure Foundry Integration
 export default App;

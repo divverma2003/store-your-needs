@@ -19,6 +19,7 @@ const VerifyPanel = (props) => {
   const email = props.user?.email;
 
   // Countdown effect for success status
+  // TODO: FIX COUNTDOWN --> currently redirects after 1 second (too quickly)
   useEffect(() => {
     if (props.verificationStatus === "success" && countdown > 0) {
       const timer = setTimeout(() => {

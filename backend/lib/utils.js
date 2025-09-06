@@ -64,6 +64,7 @@ export const prepareVerificationEmail = (verificationToken, email, name) => {
   return mailOptions;
 };
 
+// TODO: Update HTML email template to look more professional (with more on-brand theming + footer)
 export const preparePurchaseSuccessEmail = (email, name, orderDetails) => {
   const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000";
 
