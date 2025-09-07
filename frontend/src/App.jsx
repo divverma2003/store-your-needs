@@ -17,6 +17,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
+import CategoryPage from "./pages/CategoryPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -61,6 +62,7 @@ const App = () => {
               )
             }
           />
+          <Route path="/category/:category" element={<CategoryPage />} />
           <Route
             path="/verify-email/:token"
             element={

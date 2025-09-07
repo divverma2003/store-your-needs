@@ -46,7 +46,27 @@ export const useProductStore = create((set, get) => ({
     }
   },
   fetchFeaturedProducts: async () => {},
-  deleteProduct: async (productId) => {},
+  deleteProduct: async (productId) => {
+    set({ loading: true });
+    try {
+      await axios.delete(`/products/${productId}`);
+      set((prevProducts) => ({
+        products: prevProducts.products.filter(
+          (product) => product._id !== productId
+        ),
+        loading: false,
+      }));
+      toast.success("Product deleted successfully!");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while deleting product.";
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
   toggleFeaturedProduct: async (productId) => {
     set({ loading: true });
     try {
