@@ -3,12 +3,12 @@ import React from "react";
 // Components
 import CategoryItem from "../components/CategoryItem.jsx";
 const categories = [
-  { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
-  { href: "/t-shirts", name: "T-Shirts", imageUrl: "/tshirts.jpg" },
+  { href: "/pants", name: "Pants", imageUrl: "/pants.jpg" },
+  { href: "/shirts", name: "Shirts", imageUrl: "/shirts.jpg" },
   { href: "/shoes", name: "Shoes", imageUrl: "/shoes.jpg" },
   { href: "/glasses", name: "Glasses", imageUrl: "/glasses.jpg" },
   { href: "/jackets", name: "Jackets", imageUrl: "/jackets.jpg" },
-  { href: "/pantsuits", name: "Pantsuits", imageUrl: "/pantsuits.jpg" },
+  { href: "/formal-wear", name: "Formal Wear", imageUrl: "/formal-wear.jpg" },
   { href: "/bags", name: "Bags", imageUrl: "/bags.jpg" },
   { href: "/hats", name: "Hats", imageUrl: "/hats.jpg" },
   { href: "/watches", name: "Watches", imageUrl: "/watches.jpg" },
