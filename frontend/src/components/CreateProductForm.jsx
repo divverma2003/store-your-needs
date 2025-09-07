@@ -15,12 +15,12 @@ import FormInput from "./FormInput.jsx";
 import { useProductStore } from "../stores/useProductStore.js";
 
 const categories = [
-  "shirt",
-  "pant",
-  "shoe",
-  "watch",
-  "jacket",
-  "hat",
+  "shirts",
+  "pants",
+  "shoes",
+  "watches",
+  "jackets",
+  "hats",
   "glasses",
   "formal-wear",
 ];
