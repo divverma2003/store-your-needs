@@ -14,6 +14,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const res = await axios.get("/cart");
       set({ cart: res.data?.data || [] });
+      console.log("Cart items fetched:", res.data?.data || []);
       get().calculateTotals();
     } catch (error) {
       set({ cart: [] });
@@ -42,8 +43,8 @@ export const useCartStore = create((set, get) => ({
             )
           : [...prevState.cart, { ...product, quantity: 1 }];
         return { cart: newCart };
-        get().calculateTotals();
       });
+      get().calculateTotals();
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||

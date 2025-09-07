@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 // hooks
 import { useEffect } from "react";
 import { useUserStore } from "./stores/useUserStore.js";
+import { useCartStore } from "./stores/useCartStore.js";
 
 // components
 import Navbar from "./components/Navbar";
@@ -18,14 +19,23 @@ import AdminPage from "./pages/AdminPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
+  const { getCartItems } = useCartStore();
   // since we want the user to remain signed in after refresh, we'll have to use a useEffect
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]); // Empty dependency array - only run once on mount
+
+  // Fetch cart items when user is authenticated
+  useEffect(() => {
+    if (user) {
+      getCartItems();
+    }
+  }, [getCartItems, user]); // Depend on user, not getCartItems function
 
   if (isCheckingAuth) {
     return <LoadingSpinner />;
@@ -51,6 +61,10 @@ const App = () => {
           <Route
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/cart"
+            element={user ? <CartPage /> : <Navigate to="/login" />}
           />
           <Route
             path="secret-dashboard"

@@ -5,7 +5,8 @@ export const getCartProducts = async (req, res) => {
     const user = req.user;
     // find products in the user's cart
     const products = await Product.find({ _id: { $in: user.cartItems } });
-
+    console.log("user:", user);
+    console.log("Products in user's cart:", products);
     // add quantity for each product that's also in the user's cart
     // this will allow us to receive additional info about each product that's in the user's cart
     // other than just the product id + quantity
@@ -36,20 +37,14 @@ export const addToCart = async (req, res) => {
     const user = req.user;
 
     // check if item exists in the current user's cart
-    const existingItem = user.cartItems.find((item) => item.id === productId);
 
+    const existingItem = user.cartItems.find((item) => item.id === productId);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      const product = await Product.findById(productId);
-      if (product) {
-        user.cartItems.push({ id: product.id, quantity: 1 });
-      } else {
-        return res.status(404).json({
-          message: "Product not found. Unable to add to cart.",
-        });
-      }
+      user.cartItems.push(productId);
     }
+
     await user.save();
     return res.status(200).json({
       message: "Product added to cart successfully.",
