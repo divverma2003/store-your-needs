@@ -28,10 +28,23 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission logic here
-    register(formData);
+    try {
+      await register(formData);
+      setFormData({
+        ...formData,
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      setFormData({
+        ...formData,
+        password: "",
+        confirmPassword: "",
+      });
+    }
   };
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">

@@ -14,9 +14,16 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const { login, loading } = useUserStore();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    login({ email, password });
+    try {
+      await login({ email, password });
+      // Clear password field after successful login attempt
+      setPassword("");
+    } catch (error) {
+      // Clear password field even if login fails for security
+      setPassword("");
+    }
   };
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
