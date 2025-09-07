@@ -30,4 +30,48 @@ export const useProductStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+  fetchAllProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products");
+      set({ products: res.data?.data || [], loading: false });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to fetch products.";
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
+  fetchFeaturedProducts: async () => {},
+  deleteProduct: async (productId) => {},
+  toggleFeaturedProduct: async (productId) => {
+    set({ loading: true });
+    try {
+      console.log("Toggling featured for product ID:", productId);
+      const res = await axios.patch(`/products/${productId}`);
+      // update the product in the products array
+      set((prevProducts) => ({
+        products: prevProducts.products.map((product) =>
+          productId === product._id
+            ? {
+                ...product,
+                isFeatured: res.data?.data.isFeatured,
+              }
+            : product
+        ),
+        loading: false,
+      }));
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while toggling featured status.";
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
 }));

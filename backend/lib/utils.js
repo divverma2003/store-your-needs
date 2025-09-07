@@ -1,17 +1,8 @@
 import { redis } from "./redis.js";
-import Product from "../models/product.model.js";
 import crypto from "crypto";
 import { stripe } from "./stripe.js";
 import jwt from "jsonwebtoken";
 
-export const updateFeaturedProductsCache = async () => {
-  try {
-    const featuredProducts = await Product.find({ isFeatured: true }).lean();
-    await redis.set("featured_products", JSON.stringify(featuredProducts));
-  } catch (error) {
-    console.log("Error in updating featured products cache:", error.message);
-  }
-};
 export const storeRefreshToken = async (userId, refreshToken) => {
   await redis.set(
     `refresh_token:${userId}`,

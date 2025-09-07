@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, PlusCircle, ShoppingBasket } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import AnalyticsTab from "../components/AnalyticsTab";
 import CreateProductForm from "../components/CreateProductForm";
 import ProductsList from "../components/ProductsList";
+
+import { useProductStore } from "../stores/useProductStore.js";
 // TODO: Maybe add a tab to view all orders placed by users, group by day.
-/// TODO: Add stock component to products list to show stock levels
+// TODO: Add stock component to products list to show stock levels
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
   { id: "products", label: "Manage Products", icon: ShoppingBasket },
@@ -16,6 +18,13 @@ const tabs = [
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("create");
+
+  // retreive products in the background
+  const { fetchAllProducts } = useProductStore();
+  useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       <div className="relative z-10 container mx-auto px-4 py-16">

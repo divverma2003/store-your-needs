@@ -6,7 +6,6 @@ import {
   prepareVerificationEmail,
   generateTokens,
   storeRefreshToken,
-  updateFeaturedProductsCache,
   generateVerificationToken,
 } from "../lib/utils.js";
 import { redis } from "../lib/redis.js";
