@@ -32,7 +32,10 @@ router.get(
       });
     } catch (error) {
       console.error("Error fetching analytics data:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({
+        message: error.message || `Internal server error`,
+        error: error.message,
+      });
     }
   }
 );

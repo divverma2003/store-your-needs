@@ -20,7 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json()); // allow req.body to be parsed
+app.use(express.json({ limit: "10mb" })); // allow req.body to be parsed
 app.use(cookieParser()); // to parse cookies from incoming requests
 
 // Mount routes

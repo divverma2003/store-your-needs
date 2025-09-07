@@ -10,9 +10,10 @@ export const getAllProducts = async (req, res) => {
       .json({ message: "All products fetched successfully", data: products });
   } catch (error) {
     console.log("Error in getAllProducts productController:", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -41,9 +42,10 @@ export const getFeaturedProducts = async (req, res) => {
       "Error in getFeaturedProducts productController:",
       error.message
     );
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -75,9 +77,10 @@ export const createProduct = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in createProduct productController:", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -102,9 +105,10 @@ export const deleteProduct = async (req, res) => {
     return res.status(200).json({ message: "Product deleted successfully." });
   } catch (error) {
     console.log("Error in deleteProduct productController:", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -129,9 +133,10 @@ export const getRecommendedProducts = async (req, res) => {
       "Error in getRecommendedProducts productController:",
       error.message
     );
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -148,9 +153,10 @@ export const getProductsByCategory = async (req, res) => {
       "Error in getProductsByCategory productController:",
       error.message
     );
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -176,8 +182,9 @@ export const toggleFeaturedProduct = async (req, res) => {
       "Error in toggleFeaturedProduct productController:",
       error.message
     );
-    return res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };

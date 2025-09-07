@@ -9,7 +9,10 @@ export const getCoupon = async (req, res) => {
       .json({ message: "Coupon retrieved successfully", data: coupon || null });
   } catch (error) {
     console.log("Error in getCoupon couponController:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };
 
@@ -36,17 +39,18 @@ export const validateCoupon = async (req, res) => {
       return res.status(400).json({ message: "This coupon has expired." });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Coupon is valid.",
-        data: {
-          code: coupon.code,
-          discountPercentage: coupon.discountPercentage,
-        },
-      });
+    return res.status(200).json({
+      message: "Coupon is valid.",
+      data: {
+        code: coupon.code,
+        discountPercentage: coupon.discountPercentage,
+      },
+    });
   } catch (error) {
     console.log("Error in validateCoupon couponController:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: error.message || `Internal server error`,
+      error: error.message,
+    });
   }
 };

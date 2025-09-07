@@ -86,7 +86,10 @@ export const createCheckoutSession = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in createCheckoutSession paymentController:", error);
-    res.status(500).json({ error: "Error processing checkout session." });
+    res.status(500).json({
+      message: error.message || `Error processing checkout session.`,
+      error: error.message,
+    });
   }
 };
 
@@ -159,6 +162,9 @@ export const checkoutSuccess = async (req, res) => {
     }
   } catch (error) {
     console.error("Error in checkoutSuccess paymentController:", error);
-    res.status(500).json({ error: "Error processing successful checkout." });
+    res.status(500).json({
+      message: error.message || `Error processing successful checkout.`,
+      error: error.message,
+    });
   }
 };

@@ -12,6 +12,8 @@ import {
 // components
 import FormInput from "./FormInput.jsx";
 
+import { useProductStore } from "../stores/useProductStore.js";
+
 const categories = [
   "shirt",
   "pant",
@@ -24,11 +26,21 @@ const categories = [
 ];
 
 const CreateProductForm = () => {
-  const loading = false; // Placeholder for loading state
-  const handleSubmit = (event) => {
+  const { createProduct, loading } = useProductStore();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(newProduct);
-    // Handle form submission logic here
+    try {
+      await createProduct(newProduct);
+      setNewProduct({
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+      });
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   const handleImageChange = (event) => {
