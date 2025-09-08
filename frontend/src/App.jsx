@@ -42,66 +42,68 @@ const App = () => {
   }
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.3)_0%,rgba(10,80,60,0.2)_45%,rgba(0,0,0,0.1)_100%)]" />
-        </div>
+      {/* Background gradient (non-interactive, sits above bg) */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[140%] bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.28)_0%,rgba(10,80,60,0.18)_45%,rgba(0,0,0,0.08)_100%)]" />
       </div>
-      <Navbar />
-      <div className="pt-25">
-        {/* Add top padding to account for fixed navbar */}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          {/* Redirect to HomePage if user is logged in */}
-          <Route
-            path="/register"
-            element={!user ? <RegisterPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/login"
-            element={!user ? <LoginPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/cart"
-            element={user ? <CartPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="secret-dashboard"
-            element={
-              user?.role === "admin" && user?.isVerified ? (
-                <AdminPage />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route
-            path="/verify-email/:token"
-            element={
-              user && !user.isVerified ? (
-                <VerifyEmailPage />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
-          <Route
-            path="/verify-email"
-            element={
-              user && !user.isVerified ? (
-                <VerifyEmailPage />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+      {/* App content */}
+      <div className="relative z-10">
+        <Navbar />
+        <div className="pt-25">
+          {/* Add top padding to account for fixed navbar */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* Redirect to HomePage if user is logged in */}
+            <Route
+              path="/register"
+              element={!user ? <RegisterPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/login"
+              element={!user ? <LoginPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/cart"
+              element={user ? <CartPage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="secret-dashboard"
+              element={
+                user?.role === "admin" && user?.isVerified ? (
+                  <AdminPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route path="/category/:category" element={<CategoryPage />} />
+            <Route
+              path="/verify-email/:token"
+              element={
+                user && !user.isVerified ? (
+                  <VerifyEmailPage />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route
+              path="/verify-email"
+              element={
+                user && !user.isVerified ? (
+                  <VerifyEmailPage />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
-      <Footer />
       <Toaster />
     </div>
   );
