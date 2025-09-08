@@ -1,7 +1,24 @@
 import { Minus, Plus, Trash } from "lucide-react";
 import { useCartStore } from "../stores/useCartStore.js";
+import { useRef } from "react";
 const CartItem = (props) => {
   const { removeFromCart, updateQuantity } = useCartStore();
+  const dialogRef = useRef(null);
+
+  const openConfirm = () => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  };
+
+  const handleYes = () => {
+    removeFromCart(props.item._id);
+    dialogRef.current.close();
+  };
+
+  const handleNo = () => {
+    dialogRef.current.close();
+  };
 
   return (
     <div className="rounded-lg border p-4 shadow-sm border-gray-700 bg-gray-800 md:p-6">
@@ -25,7 +42,9 @@ const CartItem = (props) => {
 							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2
 							  focus:ring-emerald-500"
               onClick={() =>
-                updateQuantity(props.item._id, props.item.quantity - 1)
+                props.item.quantity > 1
+                  ? updateQuantity(props.item._id, props.item.quantity - 1)
+                  : openConfirm()
               }
             >
               <Minus className="text-gray-300" />
@@ -60,12 +79,42 @@ const CartItem = (props) => {
           <button
             aria-label="Remove from cart"
             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 bg-gray-700 text-red-400 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-            onClick={() => removeFromCart(props.item._id)}
+            onClick={openConfirm}
           >
             <Trash className="h-4 w-4" />
           </button>
         </div>
       </div>
+      {/* Confirm dialog for this item */}
+      <dialog
+        ref={dialogRef}
+        className="p-0 rounded-xl shadow-2xl bg-transparent fixed inset-0 m-auto w-fit h-fit"
+      >
+        <div className="w-[90vw] max-w-sm md:max-w-md mx-auto bg-gray-800 border border-gray-700 text-gray-100 rounded-xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-gray-700">
+            <h3 className="text-sm font-semibold text-gray-200">Remove item</h3>
+          </div>
+          <div className="px-5 py-4 text-sm text-gray-300">
+            Are you sure you want to remove
+            <span className="font-medium text-white"> {props.item.name} </span>
+            from your cart?
+          </div>
+          <div className="px-5 py-4 flex items-center justify-end gap-2 bg-gray-900/60">
+            <button
+              onClick={handleNo}
+              className="inline-flex items-center rounded-md border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-gray-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleYes}
+              className="inline-flex items-center rounded-md bg-red-900 px-3 py-1.5 text-sm text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 };
