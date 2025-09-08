@@ -41,7 +41,7 @@ export const register = async (req, res) => {
     }
     const user = await User.create({ name, email, password });
 
-    console.log(user.verificationToken);
+    // console.log(user.verificationToken);
     // send verification email
     const mailOptions = prepareVerificationEmail(
       user.verificationToken,

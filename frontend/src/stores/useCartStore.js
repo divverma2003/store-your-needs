@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { toast } from "react-hot-toast";
 
 import axios from "../lib/axios.js";
+import { updateQuantity } from "../../../backend/controllers/cart.controller.js";
 
 export const useCartStore = create((set, get) => ({
   // initial states
@@ -69,4 +70,6 @@ export const useCartStore = create((set, get) => ({
 
     set({ subtotal, total });
   },
+  removeFromCart: async (productId) => {},
+  updateQuantity: async (productId, quantity) => {},
 }));
