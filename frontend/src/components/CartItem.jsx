@@ -64,7 +64,7 @@ const CartItem = (props) => {
 
           <div className="text-end w-20 md:w-24">
             <p className="text-base font-bold text-emerald-400">
-              ${props.item.price}
+              ${props.item.price.toFixed(2)}
             </p>
           </div>
         </div>

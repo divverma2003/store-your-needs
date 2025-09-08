@@ -7,6 +7,7 @@ export const useProductStore = create((set, get) => ({
   // initial states
   loading: false,
   products: [],
+  recommendations: [],
 
   // setters
   setProducts: (products) => set({ products }),
@@ -105,6 +106,21 @@ export const useProductStore = create((set, get) => ({
         error.response?.data?.error ||
         error.message ||
         "Error while toggling featured status.";
+      toast.error(errorMessage);
+      set({ loading: false });
+    }
+  },
+  getRecommendations: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products/recommendations");
+      set({ recommendations: res.data?.data || [], loading: false });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to fetch recommendations.";
       toast.error(errorMessage);
       set({ loading: false });
     }

@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
         <div className="flex items-center justify-between mb-6 flex-grow">
           <p>
             <span className="text-3xl font-bold text-emerald-400">
-              ${product.price}
+              ${product.price.toFixed(2)}
             </span>
           </p>
         </div>

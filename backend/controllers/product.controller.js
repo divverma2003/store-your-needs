@@ -134,6 +134,7 @@ export const getRecommendedProducts = async (req, res) => {
         $project: { _id: 1, name: 1, description: 1, image: 1, price: 1 },
       }
     );
+    console.log("Recommended products:", products);
     return res.status(200).json({
       message: "Recommended products fetched successfully.",
       data: products,
