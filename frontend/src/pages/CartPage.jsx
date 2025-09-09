@@ -10,7 +10,7 @@ import { useCartStore } from "../stores/useCartStore.js";
 import CartItem from "../components/CartItem.jsx";
 import PeopleAlsoBought from "../components/PeopleAlsoBought.jsx";
 import OrderSummary from "../components/OrderSummary.jsx";
-import GiftCouponCard from "../components/GiftCoupon.jsx";
+import GiftCouponCard from "../components/GiftCouponCard.jsx";
 
 const CartPage = () => {
   const { cart } = useCartStore();
