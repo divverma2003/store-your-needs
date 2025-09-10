@@ -1,5 +1,5 @@
 import { stripe } from "../lib/stripe.js";
-import { createStripeCoupon } from "../lib/utils.js";
+import { createNewCoupon } from "../lib/utils.js";
 import getTransporter from "../lib/nodemailer.js";
 
 export const createCheckoutSession = async (req, res) => {
@@ -8,6 +8,8 @@ export const createCheckoutSession = async (req, res) => {
   try {
     // get products from cart
     const { products, couponCode } = req.body;
+
+    console.log("Products received for checkout:", products);
 
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: "Invalid or empty products array" });
@@ -29,6 +31,7 @@ export const createCheckoutSession = async (req, res) => {
           },
           unit_amount: amount,
         },
+        quantity: product.quantity || 1,
       };
     });
     let coupon = null;
@@ -65,7 +68,6 @@ export const createCheckoutSession = async (req, res) => {
         products: JSON.stringify(
           products.map((p) => ({
             id: p._id,
-            name: p.name, // check
             quantity: p.quantity,
             price: p.price,
           }))
@@ -79,6 +81,7 @@ export const createCheckoutSession = async (req, res) => {
       await createNewCoupon(req.user._id);
     }
 
+    console.log("Stripe checkout session created:", session.id);
     return res.status(200).json({
       message: "Checkout session created successfully",
       id: session.id,

@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { toast } from "react-hot-toast";
 
 import axios from "../lib/axios.js";
-import { updateQuantity } from "../../../backend/controllers/cart.controller.js";
 
 export const useCartStore = create((set, get) => ({
   // initial states
@@ -16,7 +15,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const res = await axios.get("/cart");
       set({ cart: res.data?.data || [] });
-      console.log("Cart items fetched:", res.data?.data || []);
+      console.log("Cart items fetched:", get().cart || []);
       get().calculateTotals();
     } catch (error) {
       set({ cart: [] });

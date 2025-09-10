@@ -2,7 +2,7 @@ import { redis } from "./redis.js";
 import crypto from "crypto";
 import { stripe } from "./stripe.js";
 import jwt from "jsonwebtoken";
-
+import Coupon from "../models/coupon.model.js";
 export const storeRefreshToken = async (userId, refreshToken) => {
   await redis.set(
     `refresh_token:${userId}`,
@@ -140,6 +140,7 @@ export const createStripeCoupon = async (discountPercentage) => {
 };
 
 export const createNewCoupon = async (userId) => {
+  await Coupon.findOneAndDelete({ userId });
   const MIN_OFF = 2;
   const MAX_OFF = 40;
   const newCoupon = new Coupon({
