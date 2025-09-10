@@ -15,7 +15,7 @@ export const protectRoute = async (req, res, next) => {
     try {
       // Find the user linked to the token
       const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-      console.log("Decoded token:", decoded); // Check what field contains the user ID
+      // console.log("Decoded token:", decoded); // Check what field contains the user ID
       const user = await User.findById(decoded.userId).select("-password"); // everything but the password
 
       if (!user) {

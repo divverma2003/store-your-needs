@@ -2,16 +2,23 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { MoveRight } from "lucide-react";
+import { useUserStore } from "../stores/useUserStore";
 
 import { useCartStore } from "../stores/useCartStore";
 
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "../lib/axios";
+
 const OrderSummary = () => {
   const { total, subtotal, coupon, isCouponApplied } = useCartStore();
+  const { user } = useUserStore();
+  const isVerified = user && user.isVerified;
   const savings = subtotal - total;
   const formattedSubtotal = subtotal.toFixed(2);
   const formattedTotal = total.toFixed(2);
   const formattedSavings = savings.toFixed(2);
 
+  const stripePromise = loadStripe();
   return (
     <motion.div
       className="space-y-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-sm sm:p-6"
