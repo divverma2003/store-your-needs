@@ -1,15 +1,13 @@
 import { stripe } from "../lib/stripe.js";
-import { createNewCoupon } from "../lib/utils.js";
+import { createNewCoupon, createStripeCoupon } from "../lib/utils.js";
 import getTransporter from "../lib/nodemailer.js";
-
+import Coupon from "../models/coupon.model.js";
 export const createCheckoutSession = async (req, res) => {
   const BASE_URL =
     process.env.CLIENT_URL || "http://localhost:5000/api/payments";
   try {
     // get products from cart
     const { products, couponCode } = req.body;
-
-    console.log("Products received for checkout:", products);
 
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: "Invalid or empty products array" });
@@ -37,7 +35,7 @@ export const createCheckoutSession = async (req, res) => {
     let coupon = null;
 
     if (couponCode) {
-      coupon = await coupon.findOne({
+      coupon = await Coupon.findOne({
         code: couponCode,
         userId: req.user._id,
         isActive: true,
@@ -81,7 +79,6 @@ export const createCheckoutSession = async (req, res) => {
       await createNewCoupon(req.user._id);
     }
 
-    console.log("Stripe checkout session created:", session.id);
     return res.status(200).json({
       message: "Checkout session created successfully",
       id: session.id,

@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 import { useCartStore } from "../stores/useCartStore";
+import { set } from "mongoose";
 
 const GiftCouponCard = () => {
   const [userInputCode, setUserInputCode] = useState("");
-  const { coupon, isCouponApplied } = useCartStore();
+  const { coupon, getMyCoupon, validateCoupon, isCouponApplied } =
+    useCartStore();
+
+  useEffect(() => {
+    getMyCoupon();
+  }, [getMyCoupon]);
+
+  useEffect(() => {
+    if (coupon) setUserInputCode(coupon.code);
+  }, [coupon]);
 
   const handleApplyCoupon = () => {
     // Logic to apply the coupon code
-    console.log("Applying coupon code:", userInputCode);
+    validateCoupon(userInputCode);
     // Reset input field after applying
     setUserInputCode("");
   };
 
   const handleRemoveCoupon = () => {
     // Logic to remove the applied coupon
-    console.log("Removing coupon code");
+    removeCoupon();
+    setUserInputCode("");
   };
+
   return (
     <motion.div
       className="space-y-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-sm sm:p-6"
@@ -87,7 +99,7 @@ const GiftCouponCard = () => {
             Your Available Coupon:
           </h3>
           <p className="mt-2 text-sm text-gray-400">
-            {coupon.code} : {coupon.discount}% off
+            {coupon.code} : {coupon.discountPercentage}% off
           </p>
         </div>
       )}

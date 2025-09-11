@@ -22,14 +22,12 @@ export const usePaymentStore = create((set, get) => ({
         products: cartItems,
         couponCode: coupon?.code || null,
       };
-      console.log("Creating checkout session with data:", data);
       const res = await axios.post("/payments/create-checkout-session", {
         products: cartItems,
         couponCode: coupon?.code || null,
       });
 
       const session = res.data;
-      console.log("Checkout session created:", session);
       const result = await stripe.redirectToCheckout({ sessionId: session.id });
 
       if (result.error) {

@@ -20,6 +20,8 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage.jsx";
+import PurchaseCancelPage from "./pages/PurchaseCancelPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -97,6 +99,18 @@ const App = () => {
                   <Navigate to="/" />
                 )
               }
+            />
+
+            <Route
+              path="/purchase-success"
+              element={
+                user ? <PurchaseSuccessPage /> : <Navigate to="/login" />
+              }
+            />
+
+            <Route
+              path="/purchase-cancel"
+              element={user ? <PurchaseCancelPage /> : <Navigate to="/login" />}
             />
 
             <Route path="*" element={<NotFoundPage />} />
