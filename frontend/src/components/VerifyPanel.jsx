@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
-
 const VerifyPanel = (props) => {
   const { loading, resendVerification } = useUserStore();
   const navigate = useNavigate();
@@ -84,7 +83,7 @@ const VerifyPanel = (props) => {
         <div className="text-center space-y-6">
           <div className="flex justify-center">
             <div className="size-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
-              <LoadingSpinner className="w-8 h-8 text-emerald-400 animate-spin" />
+              <Loader className="w-8 h-8 text-emerald-400 animate-spin" />
             </div>
           </div>
           <div>

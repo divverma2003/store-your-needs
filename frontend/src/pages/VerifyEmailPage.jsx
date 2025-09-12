@@ -38,8 +38,8 @@ const VerifyEmailPage = () => {
     try {
       setTimeout(async () => {
         await verifyEmail(token);
+        setVerificationStatus("success");
       }, 2000);
-      setVerificationStatus("success");
       // Redirect will be handled by VerifyPanel countdown
     } catch (error) {
       setVerificationStatus("error");
