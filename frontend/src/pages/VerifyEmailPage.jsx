@@ -35,16 +35,17 @@ const VerifyEmailPage = () => {
     console.log("handleVerification called");
     setVerificationStatus("verifying");
 
-    try {
-      setTimeout(async () => {
+    setTimeout(async () => {
+      try {
         await verifyEmail(token);
         setVerificationStatus("success");
-      }, 2000);
-      // Redirect will be handled by VerifyPanel countdown
-    } catch (error) {
-      setVerificationStatus("error");
-      setErrorMessage(error.response?.data?.message || "Verification failed.");
-    }
+      } catch (error) {
+        setVerificationStatus("error");
+        setErrorMessage(
+          error.response?.data?.message || "Verification failed."
+        );
+      }
+    }, 2000);
   };
 
   const renderContent = () => {
