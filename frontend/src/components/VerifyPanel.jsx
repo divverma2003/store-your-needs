@@ -25,6 +25,7 @@ const VerifyPanel = (props) => {
       // once the timer is set, clean it up on unmount or when countdown changes
       return () => clearTimeout(timer); // Cleanup
     } else if (props.verificationStatus === "success" && countdown === 0) {
+      console.log("Redirecting to login...");
       // Redirect when countdown reaches 0
       navigate("/login");
     }
