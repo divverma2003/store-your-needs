@@ -20,7 +20,7 @@ const VerifyPanel = (props) => {
       const timer = setTimeout(async () => {
         await logout();
         navigate("/login");
-      }, 1500); // 1.5 second delay to show success message
+      }, 3000); // 3 second delay to show success message
 
       return () => clearTimeout(timer);
     }

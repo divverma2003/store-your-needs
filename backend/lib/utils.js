@@ -31,24 +31,72 @@ export const prepareVerificationEmail = (verificationToken, email, name) => {
     to: email,
     subject: "Verify Your Email - Store Your Needs",
     html: `
-      <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; background: #f8f6fc;">
-        <h1 style="color: #7c3aed; text-align: center;">Welcome to Store Your Needs!</h1>
-        <p>Hi <strong>${name}</strong>,</p>
-        <p>Thank you for signing up to our ecommerce platform! Please click the button below to verify your email address and start shopping:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${verificationUrl}"
-             style="background-color: #7c3aed; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 8px #e9d5ff;">
-            Verify My Email
-          </a>
+      <div style="max-width: 600px; margin: 0 auto; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%); border-radius: 12px; overflow: hidden;">
+        
+        <!-- Header Section -->
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; text-align: center; position: relative;">
+          <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; display: inline-block; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 50%; margin: 0 auto 15px; display: table-cell; vertical-align: middle; text-align: center;">
+              <span style="font-size: 24px; color: #059669; line-height: 60px;">✉</span>
+            </div>
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Store Your Needs</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 500;">Premium Shopping Experience</p>
+          </div>
         </div>
-        <p>Or copy and paste this link into your browser:</p>
-        <p style="word-break: break-all; color: #6b21a8;">${verificationUrl}</p>
-        <p><strong>Important:</strong> This link will expire in 24 hours for security reasons.</p>
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e9d5ff;">
-        <p style="color: #a78bfa; font-size: 12px;">
-          If you didn't create an account, please ignore this email.<br>
-          &copy; ${new Date().getFullYear()} Store Your Needs by Divya.
-        </p>
+
+        <!-- Content Section -->
+        <div style="background: white; padding: 40px 30px;">
+          <h2 style="color: #064e3b; margin: 0 0 20px; font-size: 24px; font-weight: 600;">Welcome to Our Community!</h2>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">Hi <strong style="color: #059669;">${name}</strong>,</p>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px;">
+            Thank you for joining Store Your Needs! We're excited to have you on board. To complete your registration and start exploring our premium collection, please verify your email address below:
+          </p>
+
+          <!-- CTA Button -->
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${verificationUrl}"
+               style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+                      color: white; 
+                      padding: 16px 32px; 
+                      text-decoration: none; 
+                      border-radius: 50px; 
+                      font-weight: 600; 
+                      font-size: 16px;
+                      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+                      transition: all 0.3s ease;
+                      display: inline-block;
+                      border: 2px solid rgba(255,255,255,0.2);">
+              Verify My Email Address
+            </a>
+          </div>
+
+          <!-- Alternative Link -->
+          <div style="background: #f3f4f6; border-radius: 12px; padding: 20px; margin: 30px 0;">
+            <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px; font-weight: 500;">Can't click the button? Copy and paste this link:</p>
+            <p style="word-break: break-all; color: #059669; font-size: 14px; margin: 0; font-family: monospace; background: white; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb;">${verificationUrl}</p>
+          </div>
+
+          <!-- Security Notice -->
+          <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; margin: 30px 0; border-left: 4px solid #f59e0b;">
+            <p style="color: #92400e; font-size: 14px; margin: 0; font-weight: 500;">
+              <strong>Security Notice:</strong> This verification link will expire in 24 hours for your protection.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div style="background: #064e3b; padding: 30px; text-align: center;">
+          <div style="border-top: 1px solid rgba(16, 185, 129, 0.3); padding-top: 20px;">
+            <p style="color: #a7f3d0; font-size: 12px; margin: 0 0 8px; line-height: 1.5;">
+              If you didn't create this account, please ignore this email.
+            </p>
+            <p style="color: #6ee7b7; font-size: 13px; margin: 0; font-weight: 500;">
+              &copy; ${new Date().getFullYear()} Store Your Needs by &lt;div&gt;ya
+            </p>
+          </div>
+        </div>
       </div>
     `,
   };
