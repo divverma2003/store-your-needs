@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 import { useCartStore } from "../stores/useCartStore";
-import { set } from "mongoose";
+import { useUserStore } from "../stores/useUserStore.js";
+import toast from "react-hot-toast";
 
 const GiftCouponCard = () => {
   const [userInputCode, setUserInputCode] = useState("");
-  const { coupon, getMyCoupon, validateCoupon, isCouponApplied } =
-    useCartStore();
+  const { coupon, getMyCoupon, applyCoupon, isCouponApplied } = useCartStore();
+
+  const { user } = useUserStore();
+  const isVerified = user && user.isVerified;
 
   useEffect(() => {
     getMyCoupon();
@@ -19,8 +22,12 @@ const GiftCouponCard = () => {
 
   const handleApplyCoupon = () => {
     // Logic to apply the coupon code
-    validateCoupon(userInputCode);
-    // Reset input field after applying
+    if (!isVerified) {
+      toast.error("Please verify your email to apply a coupon.");
+      setUserInputCode("");
+      return;
+    }
+    applyCoupon(userInputCode);
     setUserInputCode("");
   };
 

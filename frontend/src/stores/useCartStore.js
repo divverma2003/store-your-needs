@@ -137,4 +137,34 @@ export const useCartStore = create((set, get) => ({
     get().calculateTotals();
     toast.success("Coupon removed.");
   },
+  applyCoupon: async (couponCode) => {
+    try {
+      const res = await axios.post("/coupons/validate", { code: couponCode });
+      set({ coupon: res.data?.data, isCouponApplied: true });
+      get().calculateTotals();
+      toast.success("Coupon successfully applied!");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to apply coupon.";
+      toast.error(errorMessage);
+    }
+  },
+  clearCart: async () => {
+    try {
+      const res = await axios.delete(`/cart/`, { data: {} });
+
+      set({ cart: [], coupon: null, total: 0, subtotal: 0 });
+      toast.success("Cart cleared.");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to clear cart.";
+      toast.error(errorMessage);
+    }
+  },
 }));

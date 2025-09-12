@@ -14,6 +14,7 @@ const stripePromise = loadStripe(stripePublishableKey);
 console.log("Stripe Publishable Key:", stripePublishableKey);
 
 export const usePaymentStore = create((set, get) => ({
+  isProcessing: false,
   createCheckoutSession: async (cartItems, coupon) => {
     try {
       const stripe = await stripePromise;
@@ -41,6 +42,22 @@ export const usePaymentStore = create((set, get) => ({
           error.message ||
           "Failed to initiate payment."
       );
+    }
+  },
+  checkoutSuccess: async (sessionId) => {
+    set({ isProcessing: true });
+    try {
+      const res = await axios.post("/payments/checkout-success", { sessionId });
+      toast.success("Payment successful!");
+      set({ isProcessing: false });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to process payment.";
+      toast.error(errorMessage);
+      set({ isProcessing: false });
     }
   },
 }));

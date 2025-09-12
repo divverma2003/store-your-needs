@@ -104,13 +104,27 @@ const App = () => {
             <Route
               path="/purchase-success"
               element={
-                user ? <PurchaseSuccessPage /> : <Navigate to="/login" />
+                user && user.isVerified ? (
+                  <PurchaseSuccessPage />
+                ) : user && !user.isVerified ? (
+                  <Navigate to="/verify-email" />
+                ) : (
+                  <Navigate to="/login" />
+                )
               }
             />
 
             <Route
               path="/purchase-cancel"
-              element={user ? <PurchaseCancelPage /> : <Navigate to="/login" />}
+              element={
+                user && user.isVerified ? (
+                  <PurchaseCancelPage />
+                ) : user && !user.isVerified ? (
+                  <Navigate to="/verify-email" />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
             />
 
             <Route path="*" element={<NotFoundPage />} />

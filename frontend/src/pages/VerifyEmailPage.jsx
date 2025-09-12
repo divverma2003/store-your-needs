@@ -8,7 +8,6 @@ import VerifyPanel from "../components/VerifyPanel";
 const VerifyEmailPage = () => {
   const { verifyEmail, user } = useUserStore();
   const { token } = useParams();
-  const navigate = useNavigate();
 
   const [verificationStatus, setVerificationStatus] = useState("initial"); // initial, verifying, success, error
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,10 +40,7 @@ const VerifyEmailPage = () => {
         await verifyEmail(token);
       }, 2000);
       setVerificationStatus("success");
-      // Auto redirect to login after 10 seconds
-      setTimeout(() => {
-        navigate("/login");
-      }, 10000);
+      // Redirect will be handled by VerifyPanel countdown
     } catch (error) {
       setVerificationStatus("error");
       setErrorMessage(error.response?.data?.message || "Verification failed.");

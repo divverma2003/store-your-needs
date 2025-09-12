@@ -1,7 +1,13 @@
 import { stripe } from "../lib/stripe.js";
-import { createNewCoupon, createStripeCoupon } from "../lib/utils.js";
+import {
+  createNewCoupon,
+  createStripeCoupon,
+  preparePurchaseSuccessEmail,
+} from "../lib/utils.js";
 import getTransporter from "../lib/nodemailer.js";
 import Coupon from "../models/coupon.model.js";
+import Order from "../models/order.model.js";
+import User from "../models/user.model.js";
 export const createCheckoutSession = async (req, res) => {
   const BASE_URL =
     process.env.CLIENT_URL || "http://localhost:5000/api/payments";
@@ -111,6 +117,14 @@ export const checkoutSuccess = async (req, res) => {
           }, // the query
           { isActive: false } // the action
         );
+      }
+      const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+      if (existingOrder) {
+        return res.status(200).json({
+          success: true,
+          message: "Order already processed.",
+          data: { orderId: existingOrder._id },
+        });
       }
       // create a new order
       // convert metadata from string to JSON

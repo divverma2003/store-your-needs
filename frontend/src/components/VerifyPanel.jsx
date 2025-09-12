@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CheckCircle2,
   XCircle,
@@ -7,28 +7,29 @@ import {
   Loader,
   Mail,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
-import { set } from "mongoose";
 
 const VerifyPanel = (props) => {
   const { loading, resendVerification } = useUserStore();
+  const navigate = useNavigate();
   const [countdown, setCountdown] = useState(10);
-
   const email = props.user?.email;
 
   // Countdown effect for success status
-  // TODO: FIX COUNTDOWN --> currently redirects after 1 second (too quickly)
   useEffect(() => {
     if (props.verificationStatus === "success" && countdown > 0) {
       const timer = setTimeout(() => {
         setCountdown(countdown - 1);
       }, 1000);
 
+      // once the timer is set, clean it up on unmount or when countdown changes
       return () => clearTimeout(timer); // Cleanup
+    } else if (props.verificationStatus === "success" && countdown === 0) {
+      // Redirect when countdown reaches 0
+      navigate("/login");
     }
-  }, [props.verificationStatus, countdown]);
+  }, [props.verificationStatus, countdown, navigate]);
 
   const handleResendVerification = async () => {
     setTimeout(async () => {
