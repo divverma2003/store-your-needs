@@ -69,7 +69,7 @@ const OrderSummary = () => {
                 Coupon ({coupon.code})
               </dt>
               <dd className="text-base font-medium text-white">
-                -{`$${coupon.discountPercentage}`}
+                -{`${coupon.discountPercentage}%`}
               </dd>
             </dl>
           )}

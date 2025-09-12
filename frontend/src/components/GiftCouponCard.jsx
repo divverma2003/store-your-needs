@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 
 const GiftCouponCard = () => {
   const [userInputCode, setUserInputCode] = useState("");
-  const { coupon, getMyCoupon, applyCoupon, isCouponApplied } = useCartStore();
+  const { coupon, getMyCoupon, applyCoupon, isCouponApplied, removeCoupon } =
+    useCartStore();
 
   const { user } = useUserStore();
   const isVerified = user && user.isVerified;
@@ -82,13 +83,13 @@ const GiftCouponCard = () => {
           <h3 className="text-lg font-medium text-gray-300">Coupon Applied:</h3>
 
           <p className="mt-2 text-sm text-gray-400">
-            {coupon.code} : {coupon.discount}% off
+            {coupon.code} : {coupon.discountPercentage}% off
           </p>
 
           <motion.button
             type="button"
-            className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 
-            px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none
+            className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-700 
+            px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none
              focus:ring-4 focus:ring-red-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
