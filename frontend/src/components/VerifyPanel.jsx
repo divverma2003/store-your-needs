@@ -10,14 +10,15 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 const VerifyPanel = (props) => {
-  const { loading, resendVerification } = useUserStore();
+  const { loading, resendVerification, logout } = useUserStore();
   const navigate = useNavigate();
   const email = props.user?.email;
 
   // Simple redirect on success (with brief delay for visual confirmation)
   useEffect(() => {
     if (props.verificationStatus === "success") {
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
+        await logout();
         navigate("/login");
       }, 1500); // 1.5 second delay to show success message
 

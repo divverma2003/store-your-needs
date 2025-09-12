@@ -38,7 +38,6 @@ const VerifyEmailPage = () => {
     setTimeout(async () => {
       try {
         await verifyEmail(token);
-        setVerificationStatus("success");
       } catch (error) {
         setVerificationStatus("error");
         setErrorMessage(
@@ -46,6 +45,7 @@ const VerifyEmailPage = () => {
         );
       }
     }, 2000);
+    setVerificationStatus("success");
   };
 
   const renderContent = () => {

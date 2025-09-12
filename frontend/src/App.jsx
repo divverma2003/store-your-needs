@@ -82,7 +82,13 @@ const App = () => {
             <Route path="/category/:category" element={<CategoryPage />} />
             <Route
               path="/verify-email/:token"
-              element={user ? <VerifyEmailPage /> : <Navigate to="/login" />}
+              element={
+                user && !user.isVerified ? (
+                  <VerifyEmailPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
             />
             <Route
               path="/verify-email"
