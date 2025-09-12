@@ -12,24 +12,18 @@ import { useUserStore } from "../stores/useUserStore";
 const VerifyPanel = (props) => {
   const { loading, resendVerification } = useUserStore();
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(10);
   const email = props.user?.email;
 
-  // Countdown effect for success status
+  // Simple redirect on success (with brief delay for visual confirmation)
   useEffect(() => {
-    if (props.verificationStatus === "success" && countdown > 0) {
+    if (props.verificationStatus === "success") {
       const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
+        navigate("/login");
+      }, 1500); // 1.5 second delay to show success message
 
-      // once the timer is set, clean it up on unmount or when countdown changes
-      return () => clearTimeout(timer); // Cleanup
-    } else if (props.verificationStatus === "success" && countdown === 0) {
-      console.log("Redirecting to login...");
-      // Redirect when countdown reaches 0
-      navigate("/login");
+      return () => clearTimeout(timer);
     }
-  }, [props.verificationStatus, countdown, navigate]);
+  }, [props.verificationStatus, navigate]);
 
   const handleResendVerification = async () => {
     setTimeout(async () => {
@@ -114,8 +108,7 @@ const VerifyPanel = (props) => {
             </p>
             <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-6">
               <p className="text-green-400 text-sm">
-                Welcome to Store Your Needs! Redirecting to login in{" "}
-                <span className="font-bold">{countdown}</span> seconds...
+                Welcome to Store Your Needs! Redirecting to login...
               </p>
             </div>
             <Link
