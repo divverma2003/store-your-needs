@@ -63,7 +63,13 @@ const AnalyticsTab = () => {
       >
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={dailySalesData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#6B7280"
+              strokeWidth={1}
+              horizontal={true}
+              vertical={true}
+            />
             <XAxis
               dataKey="date"
               stroke="#D1D5DB"
@@ -106,7 +112,7 @@ const AnalyticsTab = () => {
               dataKey="revenue"
               stroke="#3B82F6"
               activeDot={{ r: 8 }}
-              name="Revenue"
+              name="Revenue ($)"
             />
           </LineChart>
         </ResponsiveContainer>

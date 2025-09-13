@@ -98,8 +98,6 @@ export const useUserStore = create((set, get) => ({
       toast.error(errorMessage);
     }
   },
-  // TODO: Implement the axios interceptor to automatically refresh tokens (so user doesn't have to login again when access token expires -- i.e, every 15 minutes).
-  refreshToken: async () => {},
   verifyEmail: async (token) => {
     set({ loading: true });
     if (!token) {
@@ -152,4 +150,52 @@ export const useUserStore = create((set, get) => ({
       toast.error(errorMessage);
     }
   },
+  refreshToken: async () => {
+    if (get().isCheckingAuth) return;
+
+    set({ isCheckingAuth: true });
+    try {
+      const res = await axios.post("/auth/refresh-token");
+      set({ isCheckingAuth: false });
+      return res.data;
+    } catch (error) {
+      set({ isCheckingAuth: false });
+      throw error;
+    }
+  },
 }));
+
+// use refresh token endpoint to get new access token
+let refreshPromise = null;
+axios.interceptors.response.use(
+  // If the response is successful, just return it (access token hasn't expired)
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    // If we get a 401 response (access token expired), try to refresh the token
+    // set retry flag to true to avoid infinite loop (while promise is pending)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // If a refresh is already in progress, wait for it to complete
+        if (refreshPromise) {
+          await refreshPromise;
+          return axios(originalRequest);
+        }
+
+        // Start a new refresh process
+        refreshPromise = useUserStore.getState().refreshToken();
+        await refreshPromise;
+        refreshPromise = null;
+
+        return axios(originalRequest);
+      } catch (refreshError) {
+        // If refresh fails, redirect to login or handle as needed
+        useUserStore.getState().logout();
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
