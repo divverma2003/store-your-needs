@@ -35,11 +35,15 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  const distPath = path.join(__dirname, "frontend", "dist");
+
+  app.use(express.static(distPath));
 
   // Catch-all to send index.html for any non-API routes
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api/"))
+      return res.status(404).json({ message: "API route not found" });
+    res.sendFile(path.join(distPath, "index.html"));
   });
 }
 app.listen(PORT, () => {
