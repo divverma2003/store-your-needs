@@ -122,10 +122,10 @@ export const login = async (req, res) => {
           },
         });
       } else {
-        return res.status(401).json({ message: "Invalid email or password." });
+        return res.status(400).json({ message: "Invalid email or password." });
       }
     } else {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
   } catch (error) {
     console.log("Error occurred in login authController:", error.message);
