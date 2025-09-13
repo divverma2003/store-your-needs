@@ -44,12 +44,6 @@ if (process.env.NODE_ENV === "production") {
   app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
-
-  console.log("Dist exists?", fs.existsSync(distPath));
-  console.log(
-    "Index exists?",
-    fs.existsSync(path.join(distPath, "index.html"))
-  );
 }
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

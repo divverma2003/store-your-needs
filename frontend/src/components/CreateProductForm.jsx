@@ -23,6 +23,7 @@ const categories = [
   "hats",
   "glasses",
   "formal-wear",
+  "bags",
 ];
 
 const CreateProductForm = () => {
