@@ -84,7 +84,7 @@ const PurchaseSuccessPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-400">Order number</span>
               <span className="text-sm font-semibold text-emerald-400">
-                #${sessionId}
+                #{sessionId}
               </span>
             </div>
             <div className="flex items-center justify-between">
