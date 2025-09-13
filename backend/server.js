@@ -17,6 +17,8 @@ import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 
+import fs from "fs";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -38,13 +40,16 @@ if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "frontend", "dist");
 
   app.use(express.static(distPath));
-
-  // Catch-all to send index.html for any non-API routes
-  app.get("*", (req, res, next) => {
-    if (req.path.startsWith("/api/"))
-      return res.status(404).json({ message: "API route not found" });
+  // Catch-all → send index.html
+  app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
+
+  console.log("Dist exists?", fs.existsSync(distPath));
+  console.log(
+    "Index exists?",
+    fs.existsSync(path.join(distPath, "index.html"))
+  );
 }
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
