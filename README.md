@@ -2,6 +2,8 @@
 
 A full-stack modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) featuring comprehensive shopping functionality, secure payments, and professional admin analytics.
 
+Link to site: https://store-your-needs.onrender.com/
+
 ## Features
 
 ### Core E-commerce Functionality
