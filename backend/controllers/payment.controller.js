@@ -8,6 +8,7 @@ import getTransporter from "../lib/nodemailer.js";
 import Coupon from "../models/coupon.model.js";
 import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
+import Product from "../models/product.model.js";
 export const createCheckoutSession = async (req, res) => {
   const BASE_URL =
     process.env.CLIENT_URL || "http://localhost:5000/api/payments";
@@ -107,8 +108,6 @@ export const checkoutSuccess = async (req, res) => {
 
     // Handle successful checkout
     if (session.payment_status === "paid") {
-      // TODO: Fulfill the order, e.g., update database, send confirmation email + deactivate coupon, etc.
-      // if the coupon was used, deactivate it
       if (session.metadata.couponCode) {
         await Coupon.findOneAndUpdate(
           {
@@ -140,13 +139,31 @@ export const checkoutSuccess = async (req, res) => {
         stripeSessionId: sessionId,
       });
       await newOrder.save();
+      // fetch product details for email
+      const productDetails = await Product.find({
+        _id: { $in: products.map((p) => p.id) },
+      });
+      // Create rich product details for email (with names, images, etc.)
+      const emailProducts = productDetails.map((product) => {
+        const cartProduct = products.find(
+          (p) => p.id === product._id.toString()
+        );
+        return {
+          id: product._id,
+          name: product.name,
+          image: product.image,
+          quantity: cartProduct ? cartProduct.quantity : 1,
+          price: product.price,
+        };
+      });
+
       // let's get the user email, name, and order details
       const user = await User.findById(session.metadata.userId);
       const email = user.email;
       const name = user.name;
       const orderDetails = {
         id: newOrder._id,
-        products,
+        products: emailProducts, // Use rich product details for email
         totalAmount: newOrder.totalAmount,
       };
 

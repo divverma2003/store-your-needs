@@ -13,7 +13,7 @@ const PurchaseCancelPage = () => {
       >
         <div className="p-6 sm:p-8">
           <div className="flex justify-center">
-            <XCircle className="text-red-500 w-16 h-16 mb-4" />
+            <XCircle className="text-red-400 w-16 h-16 mb-4" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-red-500 mb-2">
             Checkout Cancelled
