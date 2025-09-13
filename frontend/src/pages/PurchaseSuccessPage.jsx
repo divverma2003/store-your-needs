@@ -6,7 +6,6 @@ import { useCartStore } from "../stores/useCartStore.js";
 import { usePaymentStore } from "../stores/usePaymentStore.js";
 import Confetti from "react-confetti";
 
-// TODO: Add actual order number and details
 const PurchaseSuccessPage = () => {
   const { clearCart } = useCartStore();
   const { isProcessing, checkoutSuccess, sessionId } = usePaymentStore();
