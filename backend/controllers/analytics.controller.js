@@ -62,8 +62,8 @@ export const getDailySalesData = async (startDate, endDate) => {
       const foundData = dailySalesData.find((item) => item._id === date);
       return {
         date,
-        sales: foundData?.sales || 0,
-        revenue: foundData?.revenue || 0,
+        sales: foundData?.totalSales || 0,
+        revenue: foundData?.totalRevenue || 0,
       };
     });
     return salesByDay;

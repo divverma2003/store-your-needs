@@ -19,11 +19,10 @@ router.get(
     try {
       const analyticsData = await getAnalyticsData();
 
-      let startDate = new Date();
       // we'll track our analytics data across the course of 7 days
       // starting from the current date, we'll track the last week
       const endDate = new Date();
-      startDate.setDate(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
       const dailySalesData = await getDailySalesData(startDate, endDate);
 

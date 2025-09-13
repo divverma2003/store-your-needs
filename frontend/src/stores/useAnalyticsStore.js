@@ -19,8 +19,13 @@ export const useAnalyticsStore = create((set, get) => ({
     try {
       const res = await axios.get("/analytics");
       set({
-        analyticsData: res.data.analyticsData,
-        dailySalesData: res.data.dailySalesData,
+        analyticsData: res.data.data?.analyticsData || {
+          users: 0,
+          products: 0,
+          totalSales: 0,
+          totalRevenue: 0,
+        },
+        dailySalesData: res.data.data?.dailySalesData || [],
       });
     } catch (error) {
       const errorMessage =
