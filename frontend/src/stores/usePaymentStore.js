@@ -15,6 +15,7 @@ console.log("Stripe Publishable Key:", stripePublishableKey);
 
 export const usePaymentStore = create((set, get) => ({
   isProcessing: false,
+  sessionId: null,
   createCheckoutSession: async (cartItems, coupon) => {
     try {
       const stripe = await stripePromise;
@@ -29,6 +30,7 @@ export const usePaymentStore = create((set, get) => ({
       });
 
       const session = res.data;
+      set({ sessionId: session.id });
       const result = await stripe.redirectToCheckout({ sessionId: session.id });
 
       if (result.error) {

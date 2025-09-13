@@ -7,10 +7,9 @@ import { usePaymentStore } from "../stores/usePaymentStore.js";
 import Confetti from "react-confetti";
 
 // TODO: Add actual order number and details
-// FIX EMAIL FORMATTING
 const PurchaseSuccessPage = () => {
   const { clearCart } = useCartStore();
-  const { isProcessing, checkoutSuccess } = usePaymentStore();
+  const { isProcessing, checkoutSuccess, sessionId } = usePaymentStore();
   const [error, setError] = useState(null);
   const hasProcessed = useRef(false);
 
@@ -86,7 +85,7 @@ const PurchaseSuccessPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-400">Order number</span>
               <span className="text-sm font-semibold text-emerald-400">
-                #${Math.floor(Math.random() * 1000000)}
+                #${sessionId}
               </span>
             </div>
             <div className="flex items-center justify-between">
