@@ -8,7 +8,7 @@ import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
   const { clearCart } = useCartStore();
-  const { isProcessing, checkoutSuccess, sessionId } = usePaymentStore();
+  const { isProcessing, checkoutSuccess, currSessionId } = usePaymentStore();
   const [error, setError] = useState(null);
   const hasProcessed = useRef(false);
 
@@ -84,7 +84,7 @@ const PurchaseSuccessPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-400">Order number</span>
               <span className="text-sm font-semibold text-emerald-400">
-                #{sessionId}
+                #{currSessionId}
               </span>
             </div>
             <div className="flex items-center justify-between">
