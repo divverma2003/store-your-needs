@@ -63,11 +63,34 @@ const AnalyticsTab = () => {
       >
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={dailySalesData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="date" stroke="#D1D5DB" />
-            <YAxis yAxisId="left" stroke="#D1D5DB" />
-            <YAxis yAxisId="right" orientation="right" stroke="#D1D5DB" />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              stroke="#D1D5DB"
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                return `${date.getMonth() + 1}/${date.getDate()}`;
+              }}
+            />
+            <YAxis yAxisId="left" stroke="#10B981" />
+            <YAxis yAxisId="right" orientation="right" stroke="#3B82F6" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#374151",
+                border: "1px solid #6B7280",
+                borderRadius: "8px",
+                color: "#F3F4F6",
+              }}
+              labelFormatter={(value) => {
+                const date = new Date(value);
+                return date.toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
             <Legend />
             <Line
               yAxisId="left"
