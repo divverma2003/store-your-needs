@@ -20,10 +20,6 @@ export const usePaymentStore = create((set, get) => ({
     try {
       const stripe = await stripePromise;
 
-      const data = {
-        products: cartItems,
-        couponCode: coupon?.code || null,
-      };
       const res = await axios.post("/payments/create-checkout-session", {
         products: cartItems,
         couponCode: coupon?.code || null,
