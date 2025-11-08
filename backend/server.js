@@ -17,8 +17,6 @@ import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 
-import fs from "fs";
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -27,6 +25,7 @@ const __dirname = path.resolve();
 // Middleware
 app.use(express.json({ limit: "10mb" })); // allow req.body to be parsed
 app.use(cookieParser()); // to parse cookies from incoming requests
+app.use(express.urlencoded({ extended: true })); // to parse urlencoded form data
 
 // Mount routes
 app.use("/api/auth", authRoutes);
