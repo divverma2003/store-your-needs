@@ -432,8 +432,6 @@ export const updateProfile = async (req, res) => {
       try {
         const transporter = getTransporter();
         await transporter.sendMail(mailOptions);
-
-        console.log("Email change notification sent to:", email);
       } catch (emailError) {
         return res.status(500).json({
           message:
@@ -470,6 +468,10 @@ export const updateProfile = async (req, res) => {
 
 export const verifyEmailChange = async (req, res) => {
   try {
+    console.log(
+      "Email change verification requested with token:",
+      req.params.token
+    );
     const { token } = req.params;
     const user = await User.findOne({
       emailVerificationToken: token,
@@ -583,12 +585,16 @@ export const resetPassword = async (req, res) => {
 export const resetPasswordConfirm = async (req, res) => {
   try {
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { newPassword, confirmNewPassword } = req.body;
 
     if (!newPassword) {
       return res
         .status(400)
         .json({ message: "Please provide a new password." });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ message: "Passwords do not match." });
     }
 
     const user = await User.findOne({

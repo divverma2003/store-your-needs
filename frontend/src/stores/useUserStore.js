@@ -150,6 +150,103 @@ export const useUserStore = create((set, get) => ({
       toast.error(errorMessage);
     }
   },
+  updateProfile: async ({ name, email, currentPassword, newPassword }) => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.put("/auth/profile", {
+        name,
+        email,
+        currentPassword,
+        newPassword,
+      });
+      set({ user: res.data?.data, loading: false });
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while updating profile. Please try again later.";
+      toast.error(errorMessage);
+    }
+  },
+  verifyEmailChange: async (token) => {
+    set({ loading: true });
+    if (!token) {
+      toast.error("Verification token is required");
+      set({ loading: false });
+      return;
+    }
+    try {
+      const res = await axios.get(`/auth/verify-email-change/${token}`);
+      toast.success(res.data?.message || "Email change verified successfully!");
+      set({ loading: false, user: null }); // Log out the user after successful email change
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Something went wrong.";
+      toast.error(errorMessage);
+      // rethrow error for component to handle
+      throw error; // Re-throw so component can handle it
+    }
+  },
+  requestPasswordReset: async (email) => {
+    set({ loading: true });
+    if (!email) {
+      toast.error("Email is required.");
+      set({ loading: false });
+      return;
+    }
+    try {
+      const res = await axios.post("/auth/password-reset", { email });
+
+      toast.success("Verification email sent! Please check your inbox.");
+      set({ loading: false });
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while requesting password reset. Please try again later.";
+      toast.error(errorMessage);
+    }
+  },
+  passwordReset: async (token, newPassword, confirmNewPassword) => {
+    set({ loading: true });
+
+    if (newPassword !== confirmNewPassword) {
+      set({ loading: false });
+
+      return toast.error("Passwords do not match.");
+    }
+
+    try {
+      const res = await axios.post(`/auth/reset-password-confirm/${token}`, {
+        newPassword,
+        confirmNewPassword,
+      });
+
+      toast.success(res.data?.message || "Password reset successfully!");
+      set({ loading: false, user: null }); // Log out the user after successful password reset
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Error while resetting password. Please try again later.";
+      toast.error(errorMessage);
+    }
+  },
   refreshToken: async () => {
     if (get().isCheckingAuth) return;
 

@@ -26,11 +26,11 @@ export const prepareEmailChangeVerification = (
   email,
   name
 ) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const verificationUrl = `${BASE_URL}/verify-email-change/${verificationToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Verify Your New Email Address - Store Your Needs",
     html: `
@@ -131,11 +131,11 @@ export const prepareEmailChangeVerification = (
 };
 
 export const preparePasswordChangeNotification = (email, name) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const resetUrl = `${BASE_URL}/reset-password`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Password Changed - Store Your Needs",
     html: `
@@ -437,11 +437,11 @@ export const preparePurchaseSuccessEmail = (email, name, orderDetails) => {
 };
 
 export const preparePasswordResetEmail = (token, email, name) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const resetUrl = `${BASE_URL}/reset-password-confirm/${token}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Reset Your Password - Store Your Needs",
     html: `
