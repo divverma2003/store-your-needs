@@ -31,7 +31,7 @@ const UpdateEmailPage = () => {
       setMessage("Email updated successfully.");
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/profile");
       }, 2000);
     } catch (error) {
       setStatus("error");
@@ -43,7 +43,7 @@ const UpdateEmailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 text-white">
+    <div className="min-h-screen flex items-center justify-center p-4 text-white">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex flex-col items-center gap-4">
@@ -83,9 +83,9 @@ const UpdateEmailPage = () => {
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => navigate("/profile")}
-              className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-medium rounded-lg shadow-lg hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200 flex items-center justify-center gap-2 text-base"
+              className="w-full mt-2 py-3 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-medium rounded-lg shadow-lg hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200 flex items-center justify-center gap-2 text-base"
             >
-              <ArrowLeft size={20} />
+              <User size={20} />
               Request New Link
             </motion.button>
           )}

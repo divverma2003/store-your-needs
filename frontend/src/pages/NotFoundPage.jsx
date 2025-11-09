@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const NotFoundPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center p-8 max-w-md">
         {/* Header with Logo */}
         <div className="mb-6">

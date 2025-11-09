@@ -24,6 +24,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage.jsx";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage.jsx";
 import UpdateEmailPage from "./pages/UpdateEmailPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -122,6 +123,11 @@ const App = () => {
                   <Navigate to="/login" />
                 )
               }
+            />
+
+            <Route
+              path="/reset-password-confirm/:token"
+              element={<ResetPasswordPage />}
             />
 
             <Route

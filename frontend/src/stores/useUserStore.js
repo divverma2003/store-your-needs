@@ -204,19 +204,23 @@ export const useUserStore = create((set, get) => ({
       return;
     }
     try {
-      const res = await axios.post("/auth/password-reset", { email });
-
-      toast.success("Verification email sent! Please check your inbox.");
+      const res = await axios.post("/auth/reset-password", { email });
+      toast.success(
+        "If an account with that email exists, you will receive a reset email."
+      );
       set({ loading: false });
       return res.data;
     } catch (error) {
       set({ loading: false });
+      toast.success(
+        "If an account with that email exists, you will receive a reset email."
+      );
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||
         error.message ||
-        "Error while requesting password reset. Please try again later.";
-      toast.error(errorMessage);
+        "Error while requesting password reset.";
+      console.error(errorMessage);
     }
   },
   passwordReset: async (token, newPassword, confirmNewPassword) => {
