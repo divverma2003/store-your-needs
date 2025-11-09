@@ -432,8 +432,6 @@ export const updateProfile = async (req, res) => {
       try {
         const transporter = getTransporter();
         await transporter.sendMail(mailOptions);
-
-        console.log("Email change notification sent to:", email);
       } catch (emailError) {
         return res.status(500).json({
           message:
@@ -470,6 +468,10 @@ export const updateProfile = async (req, res) => {
 
 export const verifyEmailChange = async (req, res) => {
   try {
+    console.log(
+      "Email change verification requested with token:",
+      req.params.token
+    );
     const { token } = req.params;
     const user = await User.findOne({
       emailVerificationToken: token,

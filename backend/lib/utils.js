@@ -30,7 +30,7 @@ export const prepareEmailChangeVerification = (
   const verificationUrl = `${BASE_URL}/verify-email-change/${verificationToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Verify Your New Email Address - Store Your Needs",
     html: `
@@ -135,7 +135,7 @@ export const preparePasswordChangeNotification = (email, name) => {
   const resetUrl = `${BASE_URL}/reset-password`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Password Changed - Store Your Needs",
     html: `
@@ -441,7 +441,7 @@ export const preparePasswordResetEmail = (token, email, name) => {
   const resetUrl = `${BASE_URL}/reset-password-confirm/${token}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Reset Your Password - Store Your Needs",
     html: `

@@ -23,6 +23,7 @@ import CartPage from "./pages/CartPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage.jsx";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage.jsx";
+import UpdateEmailPage from "./pages/UpdateEmailPage.jsx";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useUserStore();
@@ -102,12 +103,21 @@ const App = () => {
                 )
               }
             />
-
             <Route
               path="/verify-email-change/:token"
               element={
-                user && !user.isVerified ? (
-                  <VerifyEmailPage />
+                user && user.pendingEmail ? (
+                  <UpdateEmailPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/verify-email-change"
+              element={
+                user && user.pendingEmail ? (
+                  <UpdateEmailPage />
                 ) : (
                   <Navigate to="/login" />
                 )
@@ -116,15 +126,7 @@ const App = () => {
 
             <Route
               path="/profile"
-              element={
-                user && user.isVerified ? (
-                  <ProfilePage />
-                ) : user && !user.isVerified ? (
-                  <Navigate to="/verify-email" />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={user ? <ProfilePage /> : <Navigate to="/login" />}
             />
 
             <Route

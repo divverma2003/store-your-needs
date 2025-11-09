@@ -12,7 +12,8 @@ import { useUserStore } from "../stores/useUserStore.js";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loading } = useUserStore();
+  const { login, loading, requestPasswordReset, passwordReset } =
+    useUserStore();
 
   const handleSubmit = async (event) => {
     event.preventDefault();

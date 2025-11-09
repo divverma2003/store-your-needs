@@ -4,9 +4,10 @@ import { User, Mail, Lock, Save, Loader } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 import FormInput from "../components/FormInput";
 import toast from "react-hot-toast";
+import { set } from "mongoose";
 
 const ProfilePage = () => {
-  const { user, updateProfile, loading } = useUserStore();
+  const { user, updateProfile, logout, loading } = useUserStore();
 
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -69,8 +70,20 @@ const ProfilePage = () => {
         newPassword: "",
         confirmNewPassword: "",
       }));
+
+      // Log out the user after password change
+      setTimeout(() => {
+        logout();
+      }, 2000);
     } catch (error) {
       console.error("Password update error:", error);
+
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      }));
     }
   };
 
@@ -328,10 +341,15 @@ const ProfilePage = () => {
             <div>
               <p className="text-gray-400 mb-1">Email Status</p>
               <p className="text-white flex items-center gap-2">
-                {user?.isVerified ? (
+                {user?.isVerified && !user?.pendingEmail ? (
                   <>
                     <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                     Verified
+                  </>
+                ) : user?.isVerified && user?.pendingEmail ? (
+                  <>
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    Pending Email Change Verification
                   </>
                 ) : (
                   <>

@@ -26,7 +26,7 @@ router.post("/resend-verification", protectRoute, resendVerification);
 router.get("/profile", protectRoute, getProfile);
 
 router.put("/profile", protectRoute, updateProfile);
-router.get("/verify-email-change/:token", protectRoute, verifyEmailChange);
+router.get("/verify-email-change/:token", verifyEmailChange);
 router.post("/reset-password", resetPassword);
 router.post("/reset-password-confirm/:token", resetPasswordConfirm);
 
