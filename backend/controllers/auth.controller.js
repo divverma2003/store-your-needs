@@ -4,12 +4,14 @@ import jwt from "jsonwebtoken";
 
 import {
   prepareVerificationEmail,
+  prepareEmailChangeVerification,
+  preparePasswordChangeNotification,
+  preparePasswordResetEmail,
   generateTokens,
   storeRefreshToken,
   generateVerificationToken,
 } from "../lib/utils.js";
 import { redis } from "../lib/redis.js";
-import { set } from "mongoose";
 
 const setCookies = (res, accessToken, refreshToken) => {
   // we may set the name of our cookies to anything we'd like
@@ -321,6 +323,331 @@ export const getProfile = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in getProfile controller:", error.message);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+
+// TODO: Implement updateProfile, and update email
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email, currentPassword, newPassword } = req.body;
+
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!name && !email && !currentPassword && !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Please provide name, email or password to update." });
+    }
+
+    user.name = name || user.name;
+
+    if (email && currentPassword && email !== user.email) {
+      return res.status(400).json({
+        message:
+          "Cannot update email and password simultaneously. Please update them separately for security reasons.",
+      });
+    }
+
+    if (
+      (currentPassword && !newPassword) ||
+      (newPassword && !currentPassword)
+    ) {
+      return res.status(400).json({
+        message:
+          "To update password, both current and new passwords are required.",
+      });
+    }
+
+    if (newPassword) {
+      const passwordMatch = await user.comparePassword(currentPassword);
+      if (!passwordMatch) {
+        return res
+          .status(400)
+          .json({ message: "Current password is incorrect." });
+      }
+      const newPasswordMatch = await user.comparePassword(newPassword);
+      if (newPasswordMatch) {
+        return res.status(400).json({
+          message: "New password cannot be the same as a previous password.",
+        });
+      }
+
+      if (newPassword.length < 12) {
+        return res.status(400).json({
+          message: "New password must be at least 12 characters long.",
+        });
+      }
+
+      user.password = newPassword;
+
+      const mailOptions = preparePasswordChangeNotification(
+        user.email,
+        user.name
+      );
+      try {
+        const transporter = getTransporter();
+        await transporter.sendMail(mailOptions);
+
+        console.log("Password change notification sent to:", user.email);
+      } catch (emailError) {
+        console.log(
+          "Error sending password change notification:",
+          emailError.message
+        );
+        return res.status(500).json({
+          message:
+            "Error sending password change notification. Please try again later.",
+          error: emailError.message,
+        });
+      }
+      // send password change notification to current email
+    }
+
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ message: "Email is already in use by another account." });
+      }
+
+      const verificationToken = generateVerificationToken();
+      user.emailVerificationToken = verificationToken;
+      user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
+      user.pendingEmail = email; // Store the new email in a temporary field
+
+      await user.save();
+
+      const mailOptions = prepareEmailChangeVerification(
+        verificationToken,
+        email,
+        user.name
+      );
+      // send verification email to the new email address
+      try {
+        const transporter = getTransporter();
+        await transporter.sendMail(mailOptions);
+
+        console.log("Email change notification sent to:", email);
+      } catch (emailError) {
+        return res.status(500).json({
+          message:
+            "Error preparing email change verification. Please try again later.",
+          error: emailError.message,
+        });
+      }
+
+      return res.status(200).json({
+        message:
+          "Profile updated successfully. Please verify your new email address.",
+        data: {
+          _id: user._id,
+          name: user.name,
+          pendingEmail: user.pendingEmail,
+        },
+      });
+    }
+
+    user.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully.",
+      data: user,
+    });
+  } catch (error) {
+    console.log("Error in updateProfile controller:", error.message);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+
+export const verifyEmailChange = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message:
+          "Invalid or expired verification token. Please try updating your email again.",
+      });
+    }
+
+    user.email = user.pendingEmail;
+    user.pendingEmail = null;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
+    user.verificationToken = null;
+    user.verificationTokenExpires = null;
+    user.isVerified = true; // Mark as verified after email change
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Email updated and verified successfully.",
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: user.isVerified,
+      },
+    });
+  } catch (error) {
+    console.log("Error in verifyEmailChange controller:", error.message);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+
+// TODO: Implement resetPassword
+export const resetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Please provide an email address." });
+    }
+
+    const user = await User.findOne({ email });
+
+    const successMessage =
+      "If an account with that email exists, a password reset link has been sent.";
+
+    if (!user) {
+      return res.status(200).json({ message: successMessage });
+    }
+
+    const now = Date.now();
+    const lastSent = user.passwordResetExpires - 24 * 60 * 60 * 1000; // Calculate when it was sent
+    const timeSinceLastSent = now - lastSent;
+    const fiveMinutes = 5 * 60 * 1000;
+
+    if (timeSinceLastSent < fiveMinutes) {
+      return res.status(429).json({
+        message:
+          "Please wait 5 minutes before requesting another password reset email.",
+      });
+    }
+
+    const resetToken = generateVerificationToken();
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = Date.now() + 60 * 60 * 1000;
+    await user.save();
+
+    const mailOptions = preparePasswordResetEmail(
+      resetToken,
+      user.email,
+      user.name
+    );
+
+    try {
+      const transporter = getTransporter();
+      await transporter.sendMail(mailOptions);
+      console.log("Password reset email sent to:", user.email);
+      return res.status(200).json({ message: successMessage });
+    } catch (emailError) {
+      // Clear the reset token if email sending fails
+      user.passwordResetToken = null;
+      user.passwordResetExpires = null;
+      await user.save();
+
+      console.log("Error sending password reset email:", emailError.message);
+      return res.status(500).json({
+        message: "Error sending password reset email. Please try again later.",
+        error: emailError.message,
+      });
+    }
+  } catch (error) {
+    console.log("Error in resetPassword controller:", error.message);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+
+export const resetPasswordConfirm = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a new password." });
+    }
+
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message:
+          "Invalid or expired password reset token. Please try resetting your password again.",
+      });
+    }
+
+    // check if the new password is the same as the old one
+    const passwordMatch = await user.comparePassword(newPassword);
+    if (passwordMatch) {
+      return res.status(400).json({
+        message:
+          "New password cannot be the same as a previously used password.",
+      });
+    }
+
+    user.password = newPassword;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+
+    // send password change notification to current email
+    const mailOptions = preparePasswordChangeNotification(
+      user.email,
+      user.name
+    );
+    try {
+      const transporter = getTransporter();
+      await transporter.sendMail(mailOptions);
+      console.log("Password change notification sent to:", user.email);
+    } catch (emailError) {
+      console.log(
+        "Error sending password change notification:",
+        emailError.message
+      );
+    }
+
+    try {
+      await redis.del(`refresh_token:${user._id}`);
+      console.log("All sessions invalidated for user:", user._id);
+    } catch (redisError) {
+      console.log(
+        "Error invalidating sessions from Redis:",
+        redisError.message
+      );
+    }
+
+    return res.status(200).json({
+      message: "Password reset successfully.",
+    });
+  } catch (error) {
+    console.log("Error in resetPassword controller:", error.message);
     return res.status(500).json({
       message: error.message || "Internal Server Error.",
       error: error.message,

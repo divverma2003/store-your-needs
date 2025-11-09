@@ -7,6 +7,10 @@ import {
   refreshToken,
   getProfile,
   resendVerification,
+  updateProfile,
+  verifyEmailChange,
+  resetPassword,
+  resetPasswordConfirm,
 } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -20,5 +24,10 @@ router.post("/refresh-token", refreshToken);
 router.get("/verify-email/:token", verifyEmail);
 router.post("/resend-verification", protectRoute, resendVerification);
 router.get("/profile", protectRoute, getProfile);
+
+router.put("/profile", protectRoute, updateProfile);
+router.get("/verify-email-change/:token", protectRoute, verifyEmailChange);
+router.post("/reset-password", resetPassword);
+router.post("/reset-password-confirm/:token", resetPasswordConfirm);
 
 export default router;

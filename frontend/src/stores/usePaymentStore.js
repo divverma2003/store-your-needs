@@ -11,7 +11,6 @@ stripePublishableKey =
   stripePublishableKey ||
   "pk_test_51S2dYRJYynBvPZpTvh50Fm0pkvWAfzWtZVupU24ggLaa9haFirAAGu43CgohQ9Tbol71YXAVNrt9R8S8XTJ6OcZE00cqPAXo9p";
 const stripePromise = loadStripe(stripePublishableKey);
-console.log("Stripe Publishable Key:", stripePublishableKey);
 
 export const usePaymentStore = create((set, get) => ({
   isProcessing: false,
