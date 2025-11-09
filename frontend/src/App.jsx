@@ -20,6 +20,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage.jsx";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage.jsx";
 
@@ -90,11 +91,36 @@ const App = () => {
                 )
               }
             />
+
             <Route
               path="/verify-email"
               element={
                 user && !user.isVerified ? (
                   <VerifyEmailPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
+            <Route
+              path="/verify-email-change/:token"
+              element={
+                user && !user.isVerified ? (
+                  <VerifyEmailPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                user && user.isVerified ? (
+                  <ProfilePage />
+                ) : user && !user.isVerified ? (
+                  <Navigate to="/verify-email" />
                 ) : (
                   <Navigate to="/login" />
                 )

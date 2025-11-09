@@ -26,7 +26,7 @@ export const prepareEmailChangeVerification = (
   email,
   name
 ) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const verificationUrl = `${BASE_URL}/verify-email-change/${verificationToken}`;
 
   const mailOptions = {
@@ -131,7 +131,7 @@ export const prepareEmailChangeVerification = (
 };
 
 export const preparePasswordChangeNotification = (email, name) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const resetUrl = `${BASE_URL}/reset-password`;
 
   const mailOptions = {
@@ -437,7 +437,7 @@ export const preparePurchaseSuccessEmail = (email, name, orderDetails) => {
 };
 
 export const preparePasswordResetEmail = (token, email, name) => {
-  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
   const resetUrl = `${BASE_URL}/reset-password-confirm/${token}`;
 
   const mailOptions = {

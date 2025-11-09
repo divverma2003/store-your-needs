@@ -583,12 +583,16 @@ export const resetPassword = async (req, res) => {
 export const resetPasswordConfirm = async (req, res) => {
   try {
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { newPassword, confirmNewPassword } = req.body;
 
     if (!newPassword) {
       return res
         .status(400)
         .json({ message: "Please provide a new password." });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ message: "Passwords do not match." });
     }
 
     const user = await User.findOne({
