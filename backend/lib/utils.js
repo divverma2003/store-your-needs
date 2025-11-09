@@ -21,6 +21,198 @@ export const generateTokens = (userId) => {
   });
   return { accessToken, refreshToken };
 };
+export const prepareEmailChangeVerification = (
+  verificationToken,
+  email,
+  name
+) => {
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const verificationUrl = `${BASE_URL}/verify-email-change/${verificationToken}`;
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Verify Your New Email Address - Store Your Needs",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Email Change</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div style="min-height: 100vh; padding: 40px 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; text-align: center;">
+              <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 50%; margin: 0 auto 20px; display: table-cell; vertical-align: middle; text-align: center; line-height: 80px; border: 3px solid rgba(255, 255, 255, 0.3);">
+                <span style="font-size: 40px; color: white;">📧</span>
+              </div>
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Verify Your New Email</h1>
+              <p style="color: rgba(255, 255, 255, 0.9); margin: 10px 0 0; font-size: 16px;">Store Your Needs</p>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                Hi <strong>${name}</strong>,
+              </p>
+              
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                We received a request to change your email address to <strong style="color: #059669;">${email}</strong>.
+              </p>
+
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                To complete this change and verify ownership of this email address, please click the button below:
+              </p>
+
+              <!-- Verification Button -->
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: transform 0.2s;">
+                  Verify New Email Address
+                </a>
+              </div>
+
+              <!-- Security Notice -->
+              <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="color: #78350f; margin: 0 0 10px; font-weight: 600; font-size: 16px;">⚠️ Important Information</p>
+                <ul style="color: #78350f; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+                  <li>This verification link will expire in <strong>24 hours</strong></li>
+                  <li>Your email will <strong>not</strong> change until you verify this address</li>
+                  <li>You can still access your account with your current email</li>
+                  <li>If you didn't request this change, please ignore this email</li>
+                </ul>
+              </div>
+
+              <!-- Alternative Link -->
+              <div style="background: #f3f4f6; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="color: #1f2937; margin: 0 0 10px; font-weight: 600; font-size: 14px;">Can't click the button?</p>
+                <p style="color: #4b5563; margin: 0 0 10px; font-size: 13px;">Copy and paste this link into your browser:</p>
+                <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; word-break: break-all; font-family: 'Courier New', monospace; font-size: 12px; color: #059669;">
+                  ${verificationUrl}
+                </div>
+              </div>
+
+              <!-- What Happens Next -->
+              <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 30px 0; border-left: 4px solid #3b82f6;">
+                <p style="color: #1e40af; margin: 0 0 10px; font-weight: 600; font-size: 16px;">📝 What happens next?</p>
+                <p style="color: #1e40af; margin: 0; font-size: 14px; line-height: 1.6;">
+                  Once you verify this email address, your account email will be updated. You'll receive a confirmation email at both your old and new email addresses.
+                </p>
+              </div>
+
+              <!-- Help Section -->
+              <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
+                <p style="color: #6b7280; font-size: 14px; margin: 0;">
+                  Need help? <a href="${BASE_URL}/support" style="color: #059669; text-decoration: none; font-weight: 600;">Contact Support</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px;">
+                This verification was sent to ${email} because someone requested to change the email address on a Store Your Needs account.
+              </p>
+              <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                © ${new Date().getFullYear()} Store Your Needs. All rights reserved.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+  return mailOptions;
+};
+
+export const preparePasswordChangeNotification = (email, name) => {
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const resetUrl = `${BASE_URL}/reset-password`;
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Password Changed - Store Your Needs",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Changed</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div style="min-height: 100vh; padding: 40px 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; text-align: center;">
+              <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255, 255, 255, 0.3);">
+                <div style="font-size: 40px; color: white;">🔐</div>
+              </div>
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Password Changed</h1>
+              <p style="color: rgba(255, 255, 255, 0.9); margin: 10px 0 0; font-size: 16px;">Store Your Needs</p>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                Hi <strong>${name}</strong>,
+              </p>
+              
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                Your password was recently changed on <strong>${new Date().toLocaleString()}</strong>.
+              </p>
+
+              <!-- Security Notice -->
+              <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="color: #78350f; margin: 0 0 10px; font-weight: 600; font-size: 16px;">⚠️ Didn't make this change?</p>
+                <p style="color: #78350f; margin: 0; font-size: 14px; line-height: 1.6;">
+                  If you did not authorize this password change, your account may be compromised. Please reset your password immediately and contact our support team.
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); margin: 0 10px 10px;">
+                  Reset Password
+                </a>
+                <a href="${BASE_URL}" style="display: inline-block; background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3); margin: 0 10px 10px;">
+                  Visit Store Your Needs
+                </a>
+              </div>
+
+              <!-- Additional Security Tips -->
+              <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; margin: 30px 0; border-left: 4px solid #f59e0b;">
+                <p style="color: #92400e; font-size: 14px; margin: 0; font-weight: 500;">
+                  <strong>Security Notice:</strong> This verification link will expire in 24 hours for your protection.
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px;">
+                This is an automated security notification.
+              </p>
+              <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                © ${new Date().getFullYear()} Store Your Needs. All rights reserved.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+  return mailOptions;
+};
 
 export const prepareVerificationEmail = (verificationToken, email, name) => {
   const BASE_URL = process.env.CLIENT_URL || "http://localhost:5000/api/auth";
@@ -239,6 +431,98 @@ export const preparePurchaseSuccessEmail = (email, name, orderDetails) => {
           </div>
         </div>
       </div>
+    `,
+  };
+  return mailOptions;
+};
+
+export const preparePasswordResetEmail = (token, email, name) => {
+  const BASE_URL = process.env.CLIENT_URL || "http://localhost:5173";
+  const resetUrl = `${BASE_URL}/reset-password-confirm/${token}`;
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Reset Your Password - Store Your Needs",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset Your Password</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div style="min-height: 100vh; padding: 40px 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; text-align: center;">
+              <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 50%; margin: 0 auto 20px; display: table-cell; vertical-align: middle; text-align: center; line-height: 80px; border: 3px solid rgba(255, 255, 255, 0.3);">
+                <span style="font-size: 40px; color: white;">🔑</span>
+              </div>
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Reset Your Password</h1>
+              <p style="color: rgba(255, 255, 255, 0.9); margin: 10px 0 0; font-size: 16px;">Store Your Needs</p>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                Hi <strong>${name}</strong>,
+              </p>
+              
+              <p style="color: #1f2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                We received a request to reset your password. Click the button below to create a new password:
+              </p>
+
+              <!-- Reset Button -->
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: transform 0.2s;">
+                  Reset Password
+                </a>
+              </div>
+
+              <!-- Security Notice -->
+              <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="color: #78350f; margin: 0 0 10px; font-weight: 600; font-size: 16px;">⚠️ Important Security Information</p>
+                <ul style="color: #78350f; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+                  <li>This link will expire in <strong>1 hour</strong></li>
+                  <li>If you didn't request this reset, please ignore this email</li>
+                  <li>Your password will not change unless you click the link above</li>
+                </ul>
+              </div>
+
+              <!-- Alternative Link -->
+              <div style="background: #f3f4f6; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="color: #1f2937; margin: 0 0 10px; font-weight: 600; font-size: 14px;">Can't click the button?</p>
+                <p style="color: #4b5563; margin: 0 0 10px; font-size: 13px;">Copy and paste this link into your browser:</p>
+                <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; word-break: break-all; font-family: 'Courier New', monospace; font-size: 12px; color: #059669;">
+                  ${resetUrl}
+                </div>
+              </div>
+
+              <!-- Help Section -->
+              <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
+                <p style="color: #6b7280; font-size: 14px; margin: 0;">
+                  Need help? <a href="${BASE_URL}/support" style="color: #059669; text-decoration: none; font-weight: 600;">Contact Support</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px;">
+                If you didn't request a password reset, you can safely ignore this email.
+              </p>
+              <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                © ${new Date().getFullYear()} Store Your Needs. All rights reserved.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </body>
+      </html>
     `,
   };
   return mailOptions;

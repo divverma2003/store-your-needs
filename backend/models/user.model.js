@@ -32,6 +32,26 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    pendingEmail: {
+      type: String,
+      default: null,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null,
+    },
+    emailVerificationExpires: {
+      type: Date,
+      default: null,
+    },
+    passwordResetToken: {
+      type: String,
+      default: null,
+    },
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+    },
     cartItems: [
       {
         quantity: {
@@ -77,7 +97,18 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.comparePassword = async function (inputPassword) {
   try {
-    return await bcrypt.compare(inputPassword, this.password);
+    if (!inputPassword) {
+      throw new Error("Input password is required for comparison.");
+    }
+
+    if (!this.password) {
+      throw new Error(
+        "Error with password comparison: No password found for this user."
+      );
+    }
+
+    const isMatch = await bcrypt.compare(inputPassword, this.password);
+    return isMatch;
   } catch (error) {
     throw new Error(
       "Error in comparePassword [UserModel], password comparison failed"
